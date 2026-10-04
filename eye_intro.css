@@ -1,0 +1,165 @@
+/* ==========================================================================
+   EYE INTRO — Wildlife film visual that plays BEFORE the AVĀRTĀ peephole intro
+   Sequence: Black → Film plays (eye visual) → 3D sphere particles pulse →
+             Iris iris-mask contracts to a pupil → hands off to peephole intro
+   ========================================================================== */
+
+#eye-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 199999; /* Above everything, including #avarta-intro (z:99999) */
+  background: #000;
+  overflow: hidden;
+}
+
+/* Film fills the screen */
+#eye-film {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+#eye-film.visible {
+  opacity: 1;
+}
+
+/* Dark overlay so sphere + title are legible */
+#eye-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 80% at 50% 50%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.25) 65%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  pointer-events: none;
+}
+
+/* Sphere canvas (particle animation) */
+#eye-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+#eye-canvas.visible {
+  opacity: 1;
+}
+
+/* AVĀRTĀ wordmark that fades in near the end */
+#eye-title {
+  position: absolute;
+  bottom: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease, filter 1s ease;
+  filter: blur(12px);
+  white-space: nowrap;
+}
+
+#eye-title.visible {
+  opacity: 1;
+  filter: blur(0px);
+}
+
+#eye-title .eye-wordmark {
+  display: block;
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  font-size: clamp(1.6rem, 4vw, 3.6rem);
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  color: #fff;
+  text-shadow:
+    0 0 50px rgba(223, 194, 130, 0.65),
+    0 0 100px rgba(223, 194, 130, 0.25),
+    0 4px 24px rgba(0, 0, 0, 0.7);
+  line-height: 1;
+}
+
+#eye-title .eye-sub {
+  display: block;
+  margin-top: 14px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(0.65rem, 1.3vw, 0.95rem);
+  font-style: italic;
+  color: rgba(255, 248, 235, 0.62);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+/* Skip button */
+#eye-skip {
+  position: absolute;
+  bottom: 32px;
+  right: 36px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border-radius: 9999px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease, background 0.2s ease, color 0.2s ease;
+  pointer-events: none;
+}
+
+#eye-skip.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+#eye-skip:hover {
+  background: rgba(223, 194, 130, 0.14);
+  border-color: rgba(223, 194, 130, 0.5);
+  color: #dfc282;
+}
+
+/* Iris-collapse transition mask — the eye closing */
+#eye-iris-mask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: #000;
+  /* clip-path reveals a circle (the "pupil") that starts full-screen and shrinks */
+  clip-path: circle(100% at 50% 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#eye-iris-mask.contracting {
+  opacity: 1;
+}
+
+/* The whole eye-intro fades away when done */
+#eye-intro.done {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+/* Prevent body scroll */
+body.eye-active {
+  overflow: hidden !important;
+}

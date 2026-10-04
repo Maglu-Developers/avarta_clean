@@ -1,0 +1,3131 @@
+/* ==========================================================================
+   VISION [INDEX] — MASTER ARCHIVE STYLESHEET
+   1. Cinematic Parallax Landing Slideshow (5 Masterpieces)
+   2. 3D Coverflow Home Screen (20 Categories Arc Carousel)
+   3. Painting Library (Curated Museum Gallery with 20 Categories & Lightbox)
+   ========================================================================== */
+
+:root {
+  --color-bg-dark: #030406;
+  --color-bg-surface: #08090d;
+  --color-bg-card: #0d0f14;
+  --color-accent-amber: #d87d4a;
+  --color-accent-orange: #ff6b35;
+  --color-accent-gold: #e5b376;
+  --color-text-main: #f5f4f0;
+  --color-text-muted: rgba(245, 244, 240, 0.45);
+  --color-text-dim: rgba(245, 244, 240, 0.7);
+  --color-border-subtle: rgba(255, 255, 255, 0.12);
+  --color-border-dim: rgba(255, 255, 255, 0.07);
+  --color-card-shadow: rgba(0, 0, 0, 0.92);
+
+  --font-serif: 'Cinzel', 'Times New Roman', serif;
+  --font-cinzel: 'Cinzel', 'Times New Roman', serif;
+  --font-garamond: 'Cormorant Garamond', Georgia, serif;
+  --font-script: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Cinzel', 'Times New Roman', serif;
+  --font-heading: 'Cinzel', 'Times New Roman', serif;
+
+  --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-cinematic: 0.85s cubic-bezier(0.19, 1, 0.22, 1);
+  --transition-3d: 0.75s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+/* ==========================================================================
+   BASE & RESET
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-main);
+  font-family: var(--font-sans);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ==========================================================================
+   Quill Feather Custom Cursor
+   ========================================================================== */
+@media (hover: hover) and (pointer: fine) {
+  *,
+  *::before,
+  *::after,
+  html,
+  body {
+    cursor: url('/assets/cursor/quill-32.png?v=ref1') 30 30, auto !important;
+    cursor: -webkit-image-set(
+      url('/assets/cursor/quill-32.png?v=ref1') 1x,
+      url('/assets/cursor/quill-64.png?v=ref1') 2x
+    ) 30 30, auto !important;
+    cursor: image-set(
+      url('/assets/cursor/quill-32.png?v=ref1') 1x,
+      url('/assets/cursor/quill-64.png?v=ref1') 2x
+    ) 30 30, auto !important;
+  }
+
+  input[type="text"], input[type="email"], input[type="password"],
+  input[type="search"], input[type="number"], input[type="tel"], input[type="url"],
+  textarea, [contenteditable="true"] {
+    cursor: text !important;
+  }
+}
+
+body.is-loading * {
+  pointer-events: none !important;
+}
+
+/* Cinematic Film Grain Overlay */
+.cinematic-grain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* Dynamic Blurred Ambient Backdrop for 3D Home Screen */
+.ambient-backdrop-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+body.view-home .ambient-backdrop-container {
+  opacity: 1;
+}
+
+.ambient-bg-layer {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(64px) brightness(0.04) sepia(0.9) hue-rotate(8deg);
+  transform: scale(1.08);
+  transition: opacity 1s cubic-bezier(0.2, 0.9, 0.3, 1), transform 1.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.ambient-bg-layer.current {
+  opacity: 1;
+  z-index: 2;
+}
+
+.ambient-bg-layer.next {
+  opacity: 0;
+  z-index: 3;
+}
+
+.ambient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 48%, rgba(3, 4, 6, 0.92) 0%, rgba(1, 2, 3, 0.99) 100%);
+  z-index: 4;
+}
+
+.ambient-vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.96);
+  z-index: 5;
+}
+
+/* App Viewport Container */
+.viewport-frame {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* ==========================================================================
+   TOP SITE HEADER
+   ========================================================================== */
+.site-header {
+  display: none !important;
+}
+
+.header-left, .header-center-info, .header-right-nav {
+  pointer-events: auto;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Brand Logo */
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--color-text-main);
+  transition: opacity 0.3s ease;
+}
+
+.brand-logo:hover {
+  opacity: 0.85;
+}
+
+.logo-symbol {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-accent-amber);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.logo-text-group {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logo-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: #ffffff;
+}
+
+.logo-sub {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--color-accent-amber);
+  margin-top: 2px;
+}
+
+/* Center Indicator Pill */
+.view-indicator-pill {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border-dim);
+  padding: 6px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+/* Header Right Nav */
+.header-right-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-action-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border-subtle);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  border-radius: 24px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.header-action-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--color-accent-gold);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   SCREEN VIEWS (LANDING vs HOME vs LIBRARY)
+   ========================================================================== */
+.screen-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s var(--transition-cinematic), transform 0.8s var(--transition-cinematic), visibility 0.8s;
+  pointer-events: none;
+}
+
+.screen-view.is-active-view {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+/* ==========================================================================
+   VIEW 1: LANDING PAGE SLIDESHOW
+   ========================================================================== */
+.landing-screen-view {
+  z-index: 20;
+}
+
+.slider-viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.slider-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+.slide.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.slide-bg-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slide-bg {
+  position: absolute;
+  top: -6%;
+  left: -6%;
+  width: 112%;
+  height: 112%;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(1);
+  will-change: transform, filter;
+  transition: transform 1.2s var(--transition-cinematic), filter 1.2s ease;
+}
+
+.slide-vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 65% 50%, rgba(10, 11, 14, 0.15) 0%, rgba(8, 9, 12, 0.65) 75%, rgba(4, 5, 7, 0.92) 100%);
+  pointer-events: none;
+}
+
+.slide-content-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8vw;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.slide-content-inner {
+  width: 100%;
+  max-width: 1500px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transform-origin: left center;
+  will-change: transform, opacity;
+}
+
+.slide-title-wrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  gap: 40px;
+}
+
+.slide-main-title {
+  font-family: var(--font-cinzel);
+  font-size: clamp(3.8rem, 8.8vw, 9.2rem);
+  font-weight: 700;
+  line-height: 0.94;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  text-shadow: 
+    0 4px 28px rgba(0, 0, 0, 0.95),
+    0 0 42px rgba(255, 255, 255, 0.2),
+    0 0 85px rgba(190, 215, 255, 0.12);
+  flex-shrink: 0;
+}
+
+.title-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.slide-script-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  margin-bottom: 1.5vw;
+}
+
+.script-text {
+  font-family: var(--font-garamond);
+  font-style: italic;
+  font-size: clamp(2.6rem, 4.4vw, 5rem);
+  color: var(--color-accent-gold);
+  line-height: 1;
+  margin-bottom: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  filter: drop-shadow(0 4px 14px rgba(0,0,0,0.6));
+}
+
+.painting-short-desc {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 3px;
+  margin-top: 4px;
+  max-width: 400px;
+}
+
+.desc-author {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--color-accent-gold);
+  text-transform: uppercase;
+}
+
+.desc-text {
+  font-family: var(--font-garamond);
+  font-style: italic;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0.03em;
+  color: rgba(246, 248, 253, 0.92);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+}
+
+.scroll-to-home-indicator {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-accent-gold);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  animation: bounceDown 2s infinite ease-in-out;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+@keyframes bounceDown {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 6px); }
+}
+
+/* ==========================================================================
+   VIEW 2: HOME SCREEN — RETRO ROYALE GRAND ROYAL GALLERY (3D COVERFLOW)
+   ========================================================================== */
+.home-screen-view {
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 48px 24px 48px;
+  background-image: 
+    radial-gradient(ellipse at 50% 34%, rgba(22, 52, 38, 0.40) 0%, rgba(8, 20, 15, 0.85) 60%, rgba(2, 7, 5, 0.98) 100%),
+    url('./assets/royal_gallery_hall_bg.jpg');
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+
+
+/* ── Ambient Museum Lighting Overlay ── */
+.royal-gallery-lighting {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.royal-ambient-glow {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 75vw;
+  height: 60vh;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 45%, rgba(235, 185, 90, 0.12) 0%, rgba(18, 48, 34, 0.08) 50%, transparent 80%);
+  filter: blur(50px);
+}
+
+.royal-wall-shadow-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, transparent 45%, rgba(2, 6, 4, 0.75) 100%);
+}
+
+/* ── 3D Coverflow Stage Section ── */
+.carousel-stage-section {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 64vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.carousel-3d-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1200px;
+  perspective-origin: 50% 48%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.carousel-3d-scene.is-dragging {
+  cursor: grabbing;
+}
+
+.carousel-cards-track {
+  position: relative;
+  width: clamp(260px, 22.5vw, 340px);
+  height: clamp(410px, 57vh, 540px);
+  transform-style: preserve-3d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Retro Royale Baroque Framed Card ── */
+.carousel-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  overflow: visible;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+  transition: transform var(--transition-3d), opacity var(--transition-3d), filter var(--transition-3d);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Brass Picture Light mounted above the frame */
+.card-picture-light-wrap {
+  position: relative;
+  width: 58%;
+  height: auto;
+  margin-bottom: -16px;
+  z-index: 14;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.card-picture-light-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 10px rgba(255, 200, 80, 0.45));
+}
+
+.card-picture-light-beam {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110%;
+  height: 260px;
+  background: conic-gradient(
+    from 180deg at 50% 0%,
+    rgba(255, 228, 150, 0.35) 0deg,
+    rgba(255, 205, 105, 0.22) 18deg,
+    rgba(255, 175, 60, 0.08) 40deg,
+    transparent 60deg,
+    transparent 300deg,
+    rgba(255, 175, 60, 0.08) 320deg,
+    rgba(255, 205, 105, 0.22) 342deg,
+    rgba(255, 228, 150, 0.35) 360deg
+  );
+  filter: blur(12px);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 55%, transparent 100%);
+  opacity: 0.38;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.carousel-card.is-active .card-picture-light-beam {
+  opacity: 0.95;
+}
+
+/* Ornate Baroque Gold Frame Container */
+.card-frame-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 767 / 898;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.92)) drop-shadow(0 0 18px rgba(180, 130, 40, 0.22));
+}
+
+.card-painting-wrap {
+  position: absolute;
+  top: 17.5%;
+  left: 20.5%;
+  width: 59%;
+  height: 65%;
+  overflow: hidden;
+  background: #0d1410;
+  z-index: 1;
+}
+
+.card-painting-artwork {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.carousel-card:hover .card-painting-artwork {
+  transform: scale(1.05);
+}
+
+.card-painting-glaze {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 40%, rgba(0, 0, 0, 0.35) 100%);
+  pointer-events: none;
+}
+
+.card-ornate-frame-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Museum Cartouche Plaque beneath frame */
+.card-museum-plaque {
+  position: relative;
+  margin-top: 10px;
+  background: linear-gradient(135deg, #c7a468 0%, #ecdcb0 35%, #b58d4a 70%, #d8be85 100%);
+  border: 1px solid #7c5c24;
+  border-radius: 2px;
+  padding: 5px 16px;
+  box-shadow: 
+    0 4px 14px rgba(0, 0, 0, 0.85),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    inset 0 -1px 2px rgba(60, 40, 10, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 130px;
+  max-width: 220px;
+  z-index: 8;
+  opacity: 0.82;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.carousel-card.is-active .card-museum-plaque {
+  opacity: 1;
+  transform: scale(1.02);
+  box-shadow: 
+    0 6px 18px rgba(0, 0, 0, 0.95),
+    0 0 14px rgba(229, 179, 118, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.7);
+}
+
+.plaque-inner {
+  border: 1px solid rgba(80, 55, 18, 0.45);
+  padding: 3px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.plaque-category-title {
+  font-family: var(--font-cinzel);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #2b1f0c;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.plaque-lot-number {
+  font-family: var(--font-garamond);
+  font-style: italic;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #443217;
+  letter-spacing: 0.05em;
+}
+
+.plaque-corner {
+  position: absolute;
+  font-size: 8px;
+  line-height: 1;
+  color: #533a14;
+  opacity: 0.75;
+}
+.plaque-corner-tl { top: 3px; left: 4px; }
+.plaque-corner-tr { top: 3px; right: 4px; }
+.plaque-corner-bl { bottom: 3px; left: 4px; }
+.plaque-corner-br { bottom: 3px; right: 4px; }
+
+/* ── Polished Marble Floor Reflection ── */
+.card-floor-reflection {
+  position: absolute;
+  bottom: -45px;
+  left: 20%;
+  width: 60%;
+  height: 38px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(229, 179, 118, 0.22) 0%, rgba(180, 130, 40, 0.08) 50%, transparent 80%);
+  filter: blur(8px);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.carousel-card.is-active .card-floor-reflection {
+  opacity: 1;
+  filter: blur(6px);
+}
+
+
+
+/* ── Circular Navigation Chevrons matching Image 1 ── */
+.carousel-nav-btn {
+  position: absolute;
+  top: 48%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(10, 20, 15, 0.75);
+  border: 1px solid rgba(229, 179, 118, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #eeddb0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 40;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.75);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.carousel-nav-btn:hover {
+  background: rgba(229, 179, 118, 0.22);
+  border-color: rgba(245, 224, 152, 0.9);
+  color: #ffffff;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 24px rgba(229, 179, 118, 0.35);
+}
+
+.prev-btn { left: clamp(16px, 2.5vw, 42px); }
+.next-btn { right: clamp(16px, 2.5vw, 42px); }
+
+/* Home Bottom Bar */
+.home-bottom-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  z-index: 100;
+}
+
+.return-to-landing-btn {
+  position: absolute;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 24px;
+  border-radius: 9999px;
+  border: 1px solid rgba(223, 194, 130, 0.48);
+  background: rgba(223, 194, 130, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #dfc282;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.return-to-landing-btn svg {
+  color: inherit;
+  stroke: currentColor;
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.return-to-landing-btn:hover {
+  background: #dfc282;
+  border-color: #dfc282;
+  color: #070a14;
+  box-shadow: 0 0 28px rgba(223, 194, 130, 0.45), 0 6px 22px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.return-to-landing-btn:hover svg {
+  transform: translateX(-4px);
+}
+
+.open-all-library-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(223, 194, 130, 0.48);
+  background: rgba(223, 194, 130, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: var(--font-garamond);
+  font-size: 18px;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1;
+  color: #dfc282;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.open-all-library-btn:hover {
+  background: #dfc282;
+  border-color: #dfc282;
+  color: #070a14;
+  box-shadow: 0 0 28px rgba(223, 194, 130, 0.45), 0 6px 22px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px) scale(1.08);
+}
+
+/* ==========================================================================
+   CAROUSEL PAGINATION (LUXURY GOLD TRACK, GLOWING DOTS & FLOATING TOOLTIPS)
+   ========================================================================== */
+.carousel-pagination-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 8px;
+  max-width: 620px;
+}
+
+.pagination-arrow-nav {
+  color: rgba(238, 221, 176, 0.55);
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+  user-select: none;
+  z-index: 3;
+}
+
+.pagination-arrow-nav:hover {
+  color: #eeddb0;
+  transform: scale(1.25);
+}
+
+.carousel-pagination-track {
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  right: 6px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 2px;
+  overflow: hidden;
+  transform: translateY(-50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.carousel-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: #dfc282;
+  box-shadow: 0 0 10px rgba(223, 194, 130, 0.85);
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.carousel-pagination {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  z-index: 2;
+  overflow: visible;
+}
+
+.pag-dot {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(223, 194, 130, 0.18);
+  border: 1.5px solid rgba(223, 194, 130, 0.80);
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(223, 194, 130, 0.40), 0 0 2px rgba(0,0,0,0.8);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.pag-dot:hover {
+  background: #dfc282;
+  border-color: #dfc282;
+  transform: scale(1.45);
+  box-shadow: 0 0 14px rgba(223, 194, 130, 0.95);
+}
+
+.pag-dot.active {
+  background: #dfc282;
+  border-color: #ffffff;
+  transform: scale(1.5);
+  box-shadow: 0 0 16px rgba(223, 194, 130, 1), 0 0 4px rgba(255,255,255,0.6);
+}
+
+/* Floating Tooltip Pill (Matching Luxury Category Badge - Compact) */
+.pag-dot .dot-tooltip {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: rgba(8, 12, 24, 0.95);
+  border: 1px solid rgba(223, 194, 130, 0.55);
+  color: #dfc282;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 2px 7px;
+  border-radius: 4px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8), 0 0 10px rgba(223, 194, 130, 0.25);
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s ease;
+  z-index: 100;
+}
+
+/* Tooltip Downward Pointer Notch */
+.pag-dot .dot-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 3px;
+  border-style: solid;
+  border-color: rgba(223, 194, 130, 0.55) transparent transparent transparent;
+}
+
+/* Currently active dot always displays the category title badge during sliding and idle */
+.pag-dot.active .dot-tooltip {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateX(-50%) translateY(0) !important;
+  z-index: 102;
+}
+
+/* When directly hovering another pagination dot, highlight hovered dot's tooltip */
+.carousel-pagination:hover .pag-dot.active:not(:hover) .dot-tooltip {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(4px);
+}
+
+.pag-dot:hover .dot-tooltip {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateX(-50%) translateY(0) !important;
+  z-index: 103;
+}
+
+/* ==========================================================================
+   VIEW 3: VINTAGE INTERACTIVE FLIP DIARY (20 CURATED CATEGORIES)
+   Realistic aged parchment ring-bound journal, stacked polaroids, pinned notes,
+   and smooth 3D page flip navigation between the 20 fine art categories.
+   ========================================================================== */
+.library-screen-view {
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  padding: 68px 36px 20px 36px;
+  background: radial-gradient(circle at 50% 30%, #161822 0%, #07080c 100%);
+  overflow: hidden;
+}
+
+.library-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 20px;
+  z-index: 10;
+}
+
+.library-header-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.library-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(223, 194, 130, 0.48);
+  background: rgba(223, 194, 130, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #dfc282;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.library-back-btn:hover {
+  background: #dfc282;
+  border-color: #dfc282;
+  color: #070a14;
+  box-shadow: 0 0 24px rgba(223, 194, 130, 0.5), 0 6px 20px rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+.library-heading {
+  font-family: var(--font-cinzel);
+  font-size: clamp(1.2rem, 1.8vw, 1.55rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.library-subheading {
+  font-family: var(--font-garamond);
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: rgba(223, 194, 130, 0.85);
+  margin-top: 2px;
+}
+
+/* Category Index Badge */
+.diary-category-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(18, 20, 28, 0.85);
+  border: 1px solid rgba(223, 194, 130, 0.35);
+  padding: 6px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.diary-indicator-counter {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #dfc282;
+}
+
+.diary-indicator-tag {
+  font-family: var(--font-cinzel);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #ffffff;
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+  padding-left: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   3D VINTAGE DIARY STAGE & BOOK
+   -------------------------------------------------------------------------- */
+.vintage-diary-stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  perspective: 2000px;
+  padding: 6px 12px 14px 12px;
+}
+
+.vintage-diary-book {
+  position: relative;
+  width: clamp(740px, 86vw, 1060px);
+  height: clamp(470px, 66vh, 620px);
+  aspect-ratio: 1.5 / 1;
+  background: #d8c7a6 url('./assets/vintage_diary_bg.png?v=clean_v14') center/100% 100% no-repeat;
+  border-radius: 12px;
+  box-shadow: 
+    0 35px 80px rgba(0, 0, 0, 0.95),
+    0 10px 25px rgba(0, 0, 0, 0.75),
+    -5px 6px 0 -2px #c5b28d,
+    -10px 11px 0 -4px #b29e77,
+    5px 6px 0 -2px #c5b28d,
+    10px 11px 0 -4px #b29e77,
+    inset 0 0 0 1px rgba(120, 90, 50, 0.35);
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  cursor: grab;
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.vintage-diary-book:active {
+  cursor: grabbing;
+}
+
+/* Left & Right Pages */
+.diary-page {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.diary-page-left {
+  padding: clamp(30px, 4vh, 38px) clamp(64px, 7vw, 76px) clamp(26px, 3.5vh, 34px) clamp(72px, 8vw, 90px);
+}
+
+.diary-page-right {
+  padding: clamp(30px, 4vh, 38px) clamp(78px, 8.5vw, 96px) clamp(26px, 3.5vh, 34px) clamp(66px, 7vw, 78px);
+}
+
+.diary-page-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Central Binder Rings Spine */
+.diary-binder-spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  z-index: 8;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   LEFT PAGE: POLAROID STACK & CATEGORY STAMP
+   -------------------------------------------------------------------------- */
+.diary-stamp-header {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 6px;
+  transform: none;
+}
+
+.diary-stamp-pill {
+  font-family: var(--font-cinzel);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #3e2d19;
+  border: none;
+  padding: 0;
+}
+
+.diary-stamp-label {
+  font-family: var(--font-cinzel);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #3e2d19;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   LEFT PAGE: ROYAL VINTAGE BAROQUE GILDED MASTERPIECE FRAME
+   -------------------------------------------------------------------------- */
+.diary-polaroid-stack {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.polaroid-card {
+  position: absolute;
+  width: clamp(205px, 21.5vw, 265px);
+  height: clamp(235px, 25.5vh, 300px);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Underlay antique parchment & gilded leaf mounts */
+.polaroid-bg-2 {
+  background: #d8c298 linear-gradient(135deg, rgba(212, 175, 55, 0.4) 0%, rgba(100, 65, 20, 0.5) 100%);
+  transform: rotate(5deg) translate(8px, 6px);
+  opacity: 0.85;
+  border: 2px solid #a67c2e;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+}
+
+.polaroid-bg-1 {
+  background: #e9d5ab linear-gradient(135deg, rgba(255, 220, 130, 0.5) 0%, rgba(130, 85, 30, 0.4) 100%);
+  transform: rotate(-4.5deg) translate(-6px, 3px);
+  opacity: 0.95;
+  border: 2px solid #c99b38;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* Main Royal Baroque Gilded Frame */
+.polaroid-main.royal-vintage-frame {
+  position: relative;
+  background: linear-gradient(145deg, #caa34e 0%, #f7e199 15%, #b2852e 35%, #7a5013 55%, #dfbc6d 80%, #91611a 100%);
+  padding: 10px 10px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  transform: rotate(-1.5deg);
+  cursor: pointer;
+  pointer-events: auto;
+  border: 3px solid #6b430e;
+  border-radius: 4px;
+  box-shadow: 
+    0 22px 50px rgba(0, 0, 0, 0.85),
+    0 6px 18px rgba(0, 0, 0, 0.6),
+    inset 0 2px 4px rgba(255, 255, 255, 0.75),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.7),
+    inset 0 0 0 2px #ffe29a,
+    inset 0 0 0 5px #8c5d1b,
+    inset 0 0 0 7px #ffd470;
+  transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.polaroid-main.royal-vintage-frame:hover {
+  transform: rotate(0deg) scale(1.035);
+  box-shadow: 
+    0 30px 65px rgba(0, 0, 0, 0.95),
+    0 0 35px rgba(235, 195, 105, 0.6),
+    inset 0 2px 6px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.8),
+    inset 0 0 0 2px #fff0b8,
+    inset 0 0 0 5px #a16c20,
+    inset 0 0 0 7px #ffe185;
+  z-index: 5;
+}
+
+/* Ornate Fleur-de-lis Baroque Corner Ornaments */
+.royal-corner-ornament {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 8;
+}
+
+.royal-corner-ornament span {
+  font-size: 11px;
+  color: #3b2207;
+  text-shadow: 0 1px 0 rgba(255, 235, 170, 0.9), 0 -1px 0 rgba(0, 0, 0, 0.5);
+  line-height: 1;
+}
+
+.corner-top-left { top: -2px; left: -2px; }
+.corner-top-right { top: -2px; right: -2px; }
+.corner-bottom-left { bottom: -2px; left: -2px; }
+.corner-bottom-right { bottom: -2px; right: -2px; }
+
+/* Top Royal Archival Crest & Wax Seal */
+.royal-crest-seal {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 9;
+  pointer-events: none;
+}
+
+.royal-seal-ribbon {
+  width: 14px;
+  height: 8px;
+  background: linear-gradient(180deg, #8a1420 0%, #520910 100%);
+  clip-path: polygon(0 0, 100% 0, 80% 100%, 50% 75%, 20% 100%);
+  margin-top: -2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.royal-seal-stamp {
+  width: 26px;
+  height: 26px;
+  background: radial-gradient(circle at 35% 35%, #b2182b 0%, #780d19 65%, #3e040b 100%);
+  border: 2px solid #f5d77f;
+  border-radius: 50%;
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.65),
+    inset 0 1px 3px rgba(255, 255, 255, 0.5),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.royal-seal-symbol {
+  font-size: 12px;
+  color: #ffe680;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 4px rgba(255, 215, 0, 0.6);
+  transform: translateY(-0.5px);
+}
+
+/* Inner Museum Gilded Beveled Canvas Frame */
+.polaroid-photo-frame.royal-photo-frame {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  overflow: hidden;
+  background: #0a0704;
+  border: 2px solid #5a3508;
+  outline: 2px solid #caa34e;
+  outline-offset: -3px;
+  box-shadow: 
+    inset 0 0 16px rgba(0, 0, 0, 0.9),
+    0 2px 6px rgba(0, 0, 0, 0.5);
+  border-radius: 1px;
+}
+
+.royal-inner-gold-lip {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 225, 140, 0.4);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.polaroid-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.polaroid-main:hover .polaroid-img {
+  transform: scale(1.05);
+}
+
+.polaroid-vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Antique Engraved Brass Curatorial Plaque */
+.polaroid-caption.royal-brass-plaque {
+  position: relative;
+  margin-top: 7px;
+  background: linear-gradient(180deg, #edd28c 0%, #caa049 35%, #9b6c1e 75%, #764b0e 100%);
+  border: 1px solid #543308;
+  border-radius: 2px;
+  padding: 5px 12px 5px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  box-shadow: 
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.plaque-rivet {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle at 35% 35%, #fff2be 0%, #855716 80%, #3a2004 100%);
+  border-radius: 50%;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.rivet-left { left: 4px; }
+.rivet-right { right: 4px; }
+
+.royal-title-row {
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+}
+
+.polaroid-title {
+  font-family: var(--font-cinzel);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: #211202;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  text-shadow: 0 1px 0 rgba(255, 235, 175, 0.75);
+}
+
+.royal-artist-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+}
+
+.polaroid-artist {
+  font-family: 'Alex Brush', 'Cormorant Garamond', cursive;
+  font-style: italic;
+  font-size: 13.5px;
+  color: #3b2207;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  text-shadow: 0 1px 0 rgba(255, 235, 175, 0.5);
+}
+
+.polaroid-inspect-hint {
+  font-family: var(--font-sans);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #2e1803;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  background: rgba(255, 240, 185, 0.45);
+  border: 1px solid rgba(90, 55, 15, 0.4);
+  padding: 1px 5px;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.polaroid-main:hover .polaroid-inspect-hint {
+  background: #3e2205;
+  color: #ffe685;
+  border-color: #ffd470;
+}
+
+/* --------------------------------------------------------------------------
+   RIGHT PAGE: DIRECT CALLIGRAPHIC MANUSCRIPT TYPOGRAPHY
+   -------------------------------------------------------------------------- */
+.diary-manuscript-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Entry Header (Calligraphic flourishes & Fleur-de-lis) */
+.diary-entry-header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.note-script-tag {
+  font-family: var(--font-sans);
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #634726;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.diary-title-lockup {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+}
+
+.note-main-heading {
+  font-family: 'Cinzel Decorative', 'Cinzel', 'Playfair Display', serif;
+  font-size: clamp(18px, 2.0vw, 24px);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: #140b03;
+  line-height: 1.05;
+  margin: 0;
+  text-shadow: 0 0 1px rgba(20, 11, 3, 0.25);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.heading-flourish-icon {
+  font-size: 15px;
+  color: #634726;
+  line-height: 1;
+  transform: translateY(-2px);
+  flex-shrink: 0;
+}
+
+.note-sub-heading {
+  font-family: 'Cinzel', 'Playfair Display', serif;
+  font-size: clamp(11.5px, 1.25vw, 14.5px);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #2b1c0e;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.diary-title-swash-rule {
+  width: 100%;
+  height: 6px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 8' fill='none'%3E%3Cpath d='M0 4 C 80 8, 220 0, 300 4' stroke='%234a341e' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center/contain;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  opacity: 0.65;
+}
+
+/* Story Narrative Text (Calligraphic Cursive on Ruled Lines) */
+.diary-entry-narrative {
+  margin: 4px 0 8px 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.diary-story-text {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: clamp(15px, 1.52vw, 18.5px);
+  line-height: 25.5px;
+  color: #24140a;
+  letter-spacing: 0.012em;
+  font-weight: 700;
+  font-style: italic;
+  margin: 0;
+  text-shadow: 0 0.5px 1px rgba(36, 20, 10, 0.22);
+  overflow-wrap: break-word;
+  word-break: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Provenance & Archival List (Clean 2-Column Lines) */
+.diary-entry-provenance {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border: none;
+  padding: 4px 0 6px 0;
+  width: 100%;
+}
+
+.prov-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 8px;
+  line-height: 21px;
+  width: 100%;
+}
+
+.prov-label {
+  font-weight: 700;
+  color: #634726;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 7.5px;
+}
+
+.prov-value {
+  color: #140b03;
+  font-family: var(--font-cinzel);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Vintage Handwritten Marginalia Note (Direct Cursive Script) */
+.diary-handwritten-annotation {
+  margin-top: 4px;
+  border-left: 2px solid rgba(140, 100, 40, 0.45);
+  padding-left: 8px;
+}
+
+.annotation-text {
+  font-family: var(--font-garamond);
+  font-style: italic;
+  font-size: 12px;
+  line-height: 18px;
+  color: #4a3318;
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   PAGE FOOTER (DIRECT FOLIO MARKS & SWIPE TURN INDICATOR)
+   -------------------------------------------------------------------------- */
+.diary-page-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid rgba(140, 110, 60, 0.25);
+  z-index: 4;
+  width: 100%;
+  margin-top: 2px;
+}
+
+.diary-folio-stamp {
+  font-family: var(--font-sans);
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #7a5824;
+  opacity: 0.85;
+  text-transform: uppercase;
+}
+
+.diary-page-number {
+  font-family: var(--font-cinzel);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #533b16;
+}
+
+/* Subtle Direct Swipe Indicator (No box) */
+.diary-swipe-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 0;
+  user-select: none;
+}
+
+.swipe-hint-icon {
+  font-size: 9px;
+  color: #7a5824;
+  letter-spacing: 1px;
+}
+
+.swipe-hint-text {
+  font-family: var(--font-sans);
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #6a4c1b;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   REALISTIC 3D PHYSICAL DIARY PAGE FLIP ANIMATIONS
+   -------------------------------------------------------------------------- */
+.diary-page-flip-leaf {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.flip-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: #dfcfb0 url('./assets/vintage_diary_bg.png?v=clean_v14') right center/200% 100% no-repeat;
+}
+
+.flip-front {
+  transform: rotateY(0deg);
+  background: linear-gradient(to right, rgba(0,0,0,0.25) 0%, rgba(255,255,255,0.15) 30%, transparent 100%),
+              url('./assets/vintage_diary_bg.png?v=clean_v14') right center/200% 100% no-repeat;
+  border-radius: 0 10px 10px 0;
+}
+
+.flip-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(to left, rgba(0,0,0,0.25) 0%, rgba(255,255,255,0.15) 30%, transparent 100%),
+              url('./assets/vintage_diary_bg.png?v=clean_v14') left center/200% 100% no-repeat;
+  border-radius: 10px 0 0 10px;
+}
+
+.vintage-diary-book.is-flipping-next .diary-page-flip-leaf {
+  opacity: 1;
+  visibility: visible;
+  animation: pageFlipForward 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.vintage-diary-book.is-flipping-prev .diary-page-flip-leaf {
+  opacity: 1;
+  visibility: visible;
+  animation: pageFlipBackward 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes pageFlipForward {
+  0% {
+    transform: rotateY(0deg) skewY(0deg);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+    filter: brightness(1);
+  }
+  35% {
+    transform: rotateY(-65deg) skewY(-2.5deg);
+    box-shadow: -28px 10px 45px rgba(0, 0, 0, 0.65);
+    filter: brightness(0.85);
+  }
+  70% {
+    transform: rotateY(-130deg) skewY(2deg);
+    box-shadow: 28px 10px 45px rgba(0, 0, 0, 0.65);
+    filter: brightness(0.9);
+  }
+  100% {
+    transform: rotateY(-180deg) skewY(0deg);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
+    filter: brightness(1);
+  }
+}
+
+@keyframes pageFlipBackward {
+  0% {
+    transform: rotateY(-180deg) skewY(0deg);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
+    filter: brightness(1);
+  }
+  35% {
+    transform: rotateY(-115deg) skewY(2.5deg);
+    box-shadow: 28px 10px 45px rgba(0, 0, 0, 0.65);
+    filter: brightness(0.85);
+  }
+  70% {
+    transform: rotateY(-50deg) skewY(-2deg);
+    box-shadow: -28px 10px 45px rgba(0, 0, 0, 0.65);
+    filter: brightness(0.9);
+  }
+  100% {
+    transform: rotateY(0deg) skewY(0deg);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+    filter: brightness(1);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   CLOSED VINTAGE LEATHER DIARY (DISPLAYED AFTER CATEGORY 20)
+   -------------------------------------------------------------------------- */
+.vintage-diary-closed-book {
+  position: relative;
+  width: clamp(330px, 36vw, 440px);
+  height: clamp(470px, 66vh, 610px);
+  aspect-ratio: 0.72 / 1;
+  display: none;
+  opacity: 0;
+  cursor: pointer;
+  perspective: 1600px;
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+  user-select: none;
+}
+
+.vintage-diary-stage.is-closed .vintage-diary-book {
+  display: none;
+}
+
+.vintage-diary-stage.is-closed .vintage-diary-closed-book {
+  display: flex;
+  opacity: 1;
+  animation: bookAppearClosed 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.vintage-diary-stage.is-closing-diary .vintage-diary-book {
+  animation: bookCloseSpread 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.vintage-diary-stage.is-opening-diary .vintage-diary-book {
+  animation: bookOpenSpread 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.closed-book-cover {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  box-shadow: 
+    0 35px 80px rgba(0, 0, 0, 0.95),
+    0 12px 28px rgba(0, 0, 0, 0.75),
+    -8px 8px 0 -2px #3c2312,
+    -14px 14px 0 -4px #24140a;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 28px;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+}
+
+.vintage-diary-closed-book:hover .closed-book-cover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 45px 100px rgba(0, 0, 0, 0.98),
+    0 0 35px rgba(223, 194, 130, 0.35),
+    -10px 10px 0 -2px #4a2c16;
+}
+
+.closed-book-artwork {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.closed-book-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.closed-book-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 230, 160, 0.18) 0%, transparent 45%, rgba(0, 0, 0, 0.4) 100%);
+  pointer-events: none;
+}
+
+.closed-book-interactive-badge {
+  position: relative;
+  z-index: 5;
+  background: rgba(14, 10, 6, 0.88);
+  border: 1.5px solid rgba(223, 194, 130, 0.65);
+  border-radius: 20px;
+  padding: 8px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 16px rgba(223, 194, 130, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.vintage-diary-closed-book:hover .closed-book-interactive-badge {
+  background: rgba(223, 194, 130, 0.96);
+  border-color: #dfc282;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 24px rgba(223, 194, 130, 0.8);
+}
+
+.closed-book-interactive-badge .badge-sub {
+  font-family: var(--font-sans);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #cbb27a;
+  text-transform: uppercase;
+}
+
+.vintage-diary-closed-book:hover .closed-book-interactive-badge .badge-sub {
+  color: #3b2812;
+}
+
+.closed-book-interactive-badge .badge-main {
+  font-family: var(--font-cinzel);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #ffffff;
+}
+
+.vintage-diary-closed-book:hover .closed-book-interactive-badge .badge-main {
+  color: #120b04;
+}
+
+@keyframes bookCloseSpread {
+  0% {
+    transform: scale(1) rotateY(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.88) rotateY(-40deg);
+    opacity: 0;
+  }
+}
+
+@keyframes bookOpenSpread {
+  0% {
+    transform: scale(0.88) rotateY(40deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes bookAppearClosed {
+  0% {
+    transform: scale(0.88) rotateY(-30deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+/* ==========================================================================
+   LIGHTBOX / ROYAL ARTWORK INSPECT MODAL
+   ========================================================================== */
+/* ==========================================================================
+   LIGHTBOX / ROYAL VINTAGE FLASH CARD MODAL (NO SCROLL, NO BOOK BG)
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s;
+}
+
+.modal-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, rgba(12, 9, 6, 0.94) 0%, rgba(2, 2, 3, 0.98) 100%);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+}
+
+.artwork-lightbox-content {
+  position: relative;
+  width: 900px;
+  max-width: 92vw;
+  max-height: 90vh;
+  background: radial-gradient(ellipse at 50% 25%, #1e150d 0%, #120b06 65%, #080402 100%);
+  border: 3px solid #8c5d1b;
+  outline: 1px solid rgba(255, 230, 150, 0.4);
+  outline-offset: -7px;
+  border-radius: 6px;
+  padding: 30px 36px;
+  z-index: 10;
+  box-shadow: 
+    0 35px 100px rgba(0, 0, 0, 0.98),
+    0 0 50px rgba(212, 175, 55, 0.25),
+    inset 0 0 40px rgba(0, 0, 0, 0.85);
+  overflow: hidden !important;
+  transform: translateY(24px) scale(0.96);
+  transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.45s ease;
+}
+
+.modal-overlay.is-open .artwork-lightbox-content {
+  transform: translateY(0) scale(1);
+}
+
+.lightbox-body {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 30px;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Left: Royal Baroque Gilded Canvas Frame */
+.lightbox-image-column {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #080502;
+  border: 4px solid #6b430e;
+  outline: 2px solid #caa34e;
+  outline-offset: -3px;
+  box-shadow: 
+    0 18px 45px rgba(0, 0, 0, 0.9),
+    inset 0 0 24px rgba(0, 0, 0, 0.95);
+}
+
+.lightbox-image-column .lightbox-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.lightbox-image-column:hover .lightbox-img {
+  transform: scale(1.04);
+}
+
+.lightbox-frame-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 230, 160, 0.12) 0%, transparent 40%, rgba(0, 0, 0, 0.5) 100%);
+  pointer-events: none;
+}
+
+/* Right: Royal Archival Curatorial Document */
+.lightbox-details-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lightbox-badge {
+  font-family: var(--font-cinzel);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #dfba73;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: inline-block;
+  background: rgba(223, 186, 115, 0.1);
+  border: 1px solid rgba(223, 186, 115, 0.35);
+  padding: 2px 10px;
+  border-radius: 12px;
+  width: fit-content;
+  text-shadow: 0 0 10px rgba(223, 186, 115, 0.4);
+}
+
+.lightbox-title {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  font-size: clamp(21px, 2.3vw, 27px);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: #fff6da;
+  line-height: 1.15;
+  margin-bottom: 3px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(223, 194, 130, 0.35);
+}
+
+.lightbox-artist {
+  font-family: 'Alex Brush', 'Cormorant Garamond', cursive;
+  font-style: italic;
+  font-size: 19px;
+  font-weight: 400;
+  color: #e5c176;
+  margin-bottom: 8px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  line-height: 1.15;
+}
+
+/* Royal Divider */
+.lightbox-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.royal-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(223, 186, 115, 0.6) 0%, rgba(140, 93, 27, 0.2) 100%);
+}
+
+.royal-divider-line:last-child {
+  background: linear-gradient(270deg, rgba(223, 186, 115, 0.6) 0%, rgba(140, 93, 27, 0.2) 100%);
+}
+
+.royal-divider-fleur {
+  font-size: 13px;
+  color: #dfba73;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(223, 186, 115, 0.6);
+}
+
+.lightbox-description {
+  font-family: var(--font-garamond);
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.015em;
+  color: #d8c7ad;
+  margin-bottom: 14px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Royal Archival Metadata Grid */
+.lightbox-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  background: rgba(8, 5, 2, 0.65);
+  border: 1px solid rgba(184, 134, 11, 0.35);
+  border-radius: 4px;
+  padding: 10px 14px;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.6);
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.meta-full-width {
+  grid-column: 1 / -1;
+  border-top: 1px dashed rgba(184, 134, 11, 0.25);
+  padding-top: 5px;
+  margin-top: 2px;
+}
+
+.meta-label {
+  font-family: var(--font-sans);
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #9e7938;
+}
+
+.meta-value {
+  font-family: var(--font-cinzel);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #fff6da;
+}
+
+/* Royal Gilded Medallion Close Button */
+.modal-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(circle at 35% 35%, #7a101b 0%, #4a080f 80%, #290307 100%);
+  border: 1.5px solid #d4af37;
+  border-radius: 50%;
+  color: #ffd700;
+  font-size: 17px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  z-index: 20;
+}
+
+.modal-close-btn:hover {
+  transform: rotate(90deg) scale(1.1);
+  background: radial-gradient(circle at 35% 35%, #a81726 0%, #680c16 80%, #3a040b 100%);
+  border-color: #ffe685;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.85), 0 0 12px rgba(255, 215, 0, 0.6);
+}
+
+/* ==========================================================================
+   RESPONSIVE STYLES
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .site-header { padding: 20px 32px; }
+  .home-screen-view { padding: 185px 32px 24px 32px; }
+  .library-screen-view { padding: 75px 32px 24px 32px; }
+  .lightbox-body { grid-template-columns: 1fr; }
+  .lightbox-image-column { height: 300px; }
+}
+
+@media (max-width: 768px) {
+  .site-header { padding: 18px 20px; }
+  .header-center-info { display: none; }
+  .slide-content-container { justify-content: center; padding: 0 20px; }
+  .home-screen-view { padding: 185px 20px 20px 20px; }
+  .library-screen-view { padding: 70px 20px 20px 20px; }
+  .prev-btn { left: 10px; }
+  .next-btn { right: 10px; }
+  .slide-title-wrapper { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .slide-script-badge { align-items: flex-start; text-align: left; margin-bottom: 0; }
+  .painting-short-desc { align-items: flex-start; text-align: left; }
+  .library-header-bar { flex-direction: column; align-items: flex-start; }
+  .library-search-wrapper { width: 100%; }
+}
+
+/* ==========================================================================
+   VIEW 4: ART AUCTION EXHIBITION (SOTHEBY'S / CHRISTIE'S PREVIEW PAVILION)
+   Matches AVĀRTĀ Dark Chiaroscuro Theme & Reference Exhibition Photo:
+   - Deep museum slate/petrol architectural wall (#16242f)
+   - Monumental gilded gold frame (maximized canvas, no bulky mat negative space)
+   - Curated wall typography painted directly on wall (no amount/price)
+   - Polished museum floor with ambient reflections & ceiling track spotlights
+   ========================================================================== */
+body.view-gallery {
+  background-color: #05080c !important;
+  background-image: none !important;
+  color: #f5f4f0 !important;
+}
+
+body.view-gallery .ambient-backdrop-container,
+body.view-gallery .gallery-spotlight {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.view-gallery .cinematic-grain {
+  opacity: 0.05 !important;
+}
+
+.auction-gallery-view {
+  background: #020406 url('./assets/royal_gallery_hall_bg.jpg') center bottom / cover no-repeat !important;
+  z-index: 35;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+  cursor: default;
+  position: absolute;
+  inset: 0;
+}
+
+.auction-gallery-view::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 95% 85% at 50% 40%, rgba(2, 6, 8, 0.2) 0%, rgba(2, 6, 8, 0.72) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.auction-gallery-view.is-dragging {
+  cursor: grabbing;
+}
+
+/* Architectural Ceiling Ambient Shadow & Warm Radial Wash */
+.royal-ceiling-soffit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 90px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+  z-index: 45;
+  pointer-events: none;
+}
+
+/* Luxury Polished Museum Dark Marble Floor Plane with Real Specular Reflections */
+.royal-floor-plane {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 110px;
+  background: linear-gradient(180deg, rgba(6, 12, 10, 0.3) 0%, rgba(3, 8, 7, 0.8) 50%, rgba(1, 4, 3, 0.95) 100%);
+  border-top: 1px solid rgba(229, 179, 118, 0.12);
+  box-shadow: 0 -18px 45px rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.royal-floor-reflection-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 85% 65% at 50% 0%, rgba(229, 179, 118, 0.12) 0%, transparent 80%);
+}
+
+.royal-floor-shadow-base {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 25px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+}
+
+/* Dark Luxury Minimal Top Bar */
+.auction-top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 58px;
+  background: rgba(5, 8, 12, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(229, 179, 118, 0.18);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auction-progress-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2.5px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.auction-progress-fill {
+  height: 100%;
+  width: 5%;
+  background: linear-gradient(90deg, #d87d4a 0%, #e5b376 70%, #ffe6a3 100%);
+  box-shadow: 0 0 10px rgba(229, 179, 118, 0.6);
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auction-top-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  width: 100%;
+}
+
+.auction-top-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.auction-brand-tag {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: #e5b376;
+}
+
+.top-bar-divider {
+  color: rgba(229, 179, 118, 0.4);
+  font-size: 12px;
+}
+
+.auction-category-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: #f5f4f0;
+  text-transform: uppercase;
+}
+
+.auction-top-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.auction-lot-counter {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #e5b376;
+  text-transform: uppercase;
+}
+
+.auction-exit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(13, 20, 28, 0.7);
+  border: 1px solid rgba(229, 179, 118, 0.35);
+  border-radius: 2px;
+  padding: 7px 16px;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #f5f4f0;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.28s ease;
+}
+
+.auction-exit-btn:hover {
+  background: #e5b376;
+  color: #06090d;
+  border-color: #ffe6a3;
+  box-shadow: 0 0 16px rgba(229, 179, 118, 0.45);
+}
+
+/* Main Exhibition Stage */
+.auction-stage-container.royal-stage-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 58px 40px 32px 40px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+/* Grand Dual-Display Royal Chamber: Left Masterpiece, Right Antique Scroll */
+.royal-chamber-display {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5vw;
+  width: 100%;
+  max-width: 1380px;
+  height: 84vh;
+  min-height: 520px;
+  max-height: 820px;
+  z-index: 12;
+}
+
+/* --------------------------------------------------------------------------
+   LEFT COLUMN: GILDED FRAME MASTERPIECE + BRASS PLAQUE
+   -------------------------------------------------------------------------- */
+.royal-canvas-column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 48%;
+  max-width: 540px;
+  height: 100%;
+  transition: opacity 0.38s ease, transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.royal-frame-assembly {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-height: 68vh;
+  transition: transform 0.46s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.44s ease;
+  will-change: transform, opacity;
+  z-index: 10;
+}
+
+.royal-gold-frame-wrap {
+  position: relative;
+  aspect-ratio: 767 / 898;
+  width: min(440px, 38vw, calc(56vh * (767 / 898)));
+  height: auto;
+  max-height: 58vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.95));
+}
+
+.royal-canvas-box {
+  position: absolute;
+  top: 17.5%;
+  left: 20.5%;
+  width: 59%;
+  height: 65%;
+  overflow: hidden;
+  background: #080808;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.royal-canvas-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: opacity 0.3s ease;
+}
+
+.royal-canvas-glaze {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.65), inset 0 2px 4px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+.royal-canvas-varnish {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(130deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 35%, rgba(0, 0, 0, 0.1) 100%);
+  pointer-events: none;
+}
+
+.royal-frame-border-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Classical Engraved Brass Museum Plaque */
+.royal-brass-plaque {
+  position: relative;
+  margin-top: 14px;
+  width: 250px;
+  max-width: 75%;
+  padding: 8px 18px;
+  background: linear-gradient(135deg, #e7c577 0%, #cfab51 25%, #9e7526 50%, #deb75e 75%, #b28830 100%);
+  border: 1.5px solid #ffdf8d;
+  border-radius: 2px;
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.85),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  z-index: 12;
+}
+
+.plaque-corner-screw {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #5a3f12 0%, #291a04 100%);
+  border: 0.5px solid rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 0.5px 1px rgba(0,0,0,0.8);
+}
+
+.screw-tl { top: 3px; left: 4px; }
+.screw-tr { top: 3px; right: 4px; }
+.screw-bl { bottom: 3px; left: 4px; }
+.screw-br { bottom: 3px; right: 4px; }
+
+.royal-plaque-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5px;
+}
+
+.royal-plaque-title {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #271908;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.royal-plaque-artist {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #3b2812;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.royal-plaque-year {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #4b361a;
+}
+
+/* --------------------------------------------------------------------------
+   RIGHT COLUMN: UNROLLED ANTIQUE PARCHMENT SCROLL WITH GRAND ROLL-DOWN UNVEILING
+   -------------------------------------------------------------------------- */
+.royal-scroll-column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 44%;
+  max-width: 490px;
+  height: 100%;
+  transition: opacity 0.38s ease, transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.royal-scroll-assembly {
+  position: relative;
+  width: 460px;
+  max-width: 43vw;
+  height: 600px;
+  max-height: 72vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.95));
+  z-index: 10;
+  transform-origin: top center;
+}
+
+/* Wrapper that physically unrolls downwards from top */
+.scroll-roll-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-origin: top center;
+}
+
+/* ==========================================================================
+   GRAND UNVEILING ROLL-DOWN ANIMATION (ROLLS DOWN FROM ABOVE)
+   ========================================================================== */
+.royal-scroll-assembly.is-rolling-down .scroll-roll-canvas {
+  animation: grandPosterRollDown 1.15s cubic-bezier(0.16, 0.92, 0.28, 1) forwards;
+}
+
+.royal-scroll-assembly.is-rolling-down .scroll-manuscript-content {
+  animation: manuscriptUnveilText 1.15s cubic-bezier(0.16, 0.92, 0.28, 1) forwards;
+}
+
+@keyframes grandPosterRollDown {
+  0% {
+    transform: scaleY(0.04);
+    opacity: 0.6;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
+  }
+  35% {
+    opacity: 1;
+  }
+  74% {
+    transform: scaleY(1.035);
+  }
+  88% {
+    transform: scaleY(0.985);
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+    filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.95));
+  }
+}
+
+@keyframes manuscriptUnveilText {
+  0% {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.3;
+  }
+  35% {
+    opacity: 1;
+  }
+  74% {
+    clip-path: inset(0 0 0% 0);
+  }
+  100% {
+    clip-path: inset(0 0 0% 0);
+    opacity: 1;
+  }
+}
+
+.royal-scroll-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+  z-index: 1;
+  transform-origin: top center;
+}
+
+.scroll-manuscript-content {
+  position: absolute;
+  top: 13.5%;
+  bottom: 15%;
+  left: 14%;
+  right: 14%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #24170b;
+  z-index: 5;
+  padding: 0 10px;
+}
+
+.scroll-header {
+  margin-bottom: 2px;
+}
+
+.scroll-artwork-title {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #1e1308;
+  text-transform: uppercase;
+  margin: 0 0 3px 0;
+  line-height: 1.15;
+}
+
+.scroll-artist-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #382513;
+  text-transform: uppercase;
+  margin: 0 0 2px 0;
+}
+
+.scroll-year-tag {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: #4f3922;
+}
+
+.scroll-ornament-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 80%;
+  max-width: 260px;
+  margin: 10px 0;
+  color: #6d4e28;
+  font-size: 13px;
+}
+
+.divider-swash-line {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, #846338 50%, transparent);
+}
+
+.divider-icon {
+  font-size: 12px;
+  color: #6d4e28;
+  line-height: 1;
+}
+
+/* Colon-Aligned Metadata Table */
+.scroll-metadata-table {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  max-width: 310px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.scroll-meta-row {
+  display: grid;
+  grid-template-columns: 86px 14px 1fr;
+  align-items: baseline;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.meta-field-label {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: #3a2612;
+  text-transform: uppercase;
+}
+
+.meta-field-colon {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 11px;
+  color: #4e351c;
+  text-align: center;
+}
+
+.meta-field-value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #22160a;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Curatorial Narrative Paragraph */
+.scroll-narrative-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.45;
+  color: #2f1f11;
+  max-width: 310px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   FLOOR REFLECTIONS (LEFT & RIGHT)
+   -------------------------------------------------------------------------- */
+.royal-floor-reflection {
+  position: absolute;
+  bottom: -15px;
+  width: 80%;
+  height: 45px;
+  background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(229, 179, 118, 0.15) 0%, rgba(200, 150, 80, 0.03) 50%, transparent 80%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.reflection-left { left: 10%; }
+.reflection-right { right: 10%; }
+
+/* Transitions */
+.royal-canvas-column.is-fading,
+.royal-scroll-column.is-fading {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Floating Navigation Chevrons */
+.auction-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(10, 16, 22, 0.88);
+  border: 1px solid rgba(229, 179, 118, 0.32);
+  color: #e5b376;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 25;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+
+.auction-prev-btn { left: 20px; }
+.auction-next-btn { right: 20px; }
+
+.auction-nav-btn:hover {
+  background: #e5b376;
+  color: #06090d;
+  border-color: #ffe6a3;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 10px 30px rgba(229, 179, 118, 0.35);
+}
+
+/* Minimal Bottom Hint Bar */
+.auction-bottom-hint {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: rgba(245, 244, 240, 0.45);
+  text-transform: uppercase;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.hint-swipe-icon {
+  font-size: 12px;
+  color: #e5b376;
+}
+
+/* Responsive Rules for Royal Art Exhibition */
+@media (max-width: 1024px) {
+  .auction-stage-container.royal-stage-container { padding: 58px 30px 40px 30px; }
+  .royal-chamber-display { gap: 3vw; height: 82vh; }
+  .royal-gold-frame-wrap {
+    width: min(360px, 42vw, calc(52vh * (767 / 898)));
+    height: auto;
+    aspect-ratio: 767 / 898;
+  }
+  .royal-scroll-assembly { width: 390px; height: 520px; }
+  .scroll-artwork-title { font-size: 18px; }
+  .scroll-metadata-table { max-width: 270px; }
+  .scroll-narrative-text { font-size: 12px; }
+  .auction-prev-btn { left: 10px; width: 44px; height: 44px; }
+  .auction-next-btn { right: 10px; width: 44px; height: 44px; }
+}
+
+@media (max-width: 820px) {
+  .royal-chamber-display {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+    height: 84vh;
+    padding-top: 15px;
+    gap: 24px;
+  }
+  .royal-canvas-column,
+  .royal-scroll-column {
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    padding-bottom: 20px;
+  }
+  .royal-gold-frame-wrap {
+    width: min(310px, 78vw, calc(46vh * (767 / 898)));
+    height: auto;
+    aspect-ratio: 767 / 898;
+  }
+  .royal-scroll-assembly { width: 330px; height: 440px; }
+  .royal-hanging-chandelier { display: none; }
+  .scroll-manuscript-content { top: 10%; bottom: 10%; left: 12%; right: 12%; }
+  .scroll-artwork-title { font-size: 16px; }
+  .scroll-narrative-text { font-size: 11.5px; line-height: 1.35; }
+  .auction-top-inner { padding: 0 18px; }
+  .auction-category-name { font-size: 11px; }
+  .auction-top-right { gap: 14px; }
+  .auction-bottom-hint { display: none; }
+}
+
+
+

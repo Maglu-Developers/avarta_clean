@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AVĀRTĀ ® — VISION [INDEX] 3D Categories Carousel & Painting Library</title>
+  <meta name="description" content="Explore fine art across 20 curated categories in an interactive 3D coverflow home screen and comprehensive painting library.">
+  
+  <!-- Typography matching Vintage Calligraphic Masterpiece Journal Theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="./categories.css?v=frame_fit_v2">
+  <link rel="stylesheet" href="style.css?v=audio_toggle">
+  <link rel="stylesheet" href="/assets/cursor/cursor.css">
+  <script src="audio-manager.js?v=global_v1"></script>
+</head>
+<body class="is-loading view-home">
+
+  <!-- Grain Texture Overlay -->
+  <div class="cinematic-grain"></div>
+
+  <!-- Dynamic Blurred Ambient Backdrop for Home Screen -->
+  <div class="ambient-backdrop-container" id="ambientBackdrop">
+    <div class="ambient-bg-layer current" id="ambientBgCurrent"></div>
+    <div class="ambient-bg-layer next" id="ambientBgNext"></div>
+    <div class="ambient-overlay"></div>
+    <div class="ambient-vignette"></div>
+  </div>
+
+  <!-- Main Website Container Frame -->
+  <div class="viewport-frame" id="viewportFrame">
+
+    <!-- ==========================================================================
+         VIEW 1: LANDING PAGE (FULL-SCREEN CINEMATIC PARALLAX SLIDESHOW)
+         ========================================================================== -->
+    <section class="screen-view landing-screen-view" id="landingScreenView">
+      <main class="slider-viewport" id="sliderViewport">
+        <div class="slider-track" id="sliderTrack">
+
+          <!-- Slide 1: THE ART OF LIFE (Johannes Vermeer) -->
+          <section class="slide is-active" data-index="0" id="slide-0">
+            <div class="slide-bg-wrapper">
+              <div class="slide-bg" style="background-image: url('./assets/master1.jpg');"></div>
+              <div class="slide-vignette"></div>
+            </div>
+            <div class="slide-content-container">
+              <div class="slide-content-inner">
+                <div class="slide-title-wrapper">
+                  <h1 class="slide-main-title">
+                    <span class="title-line title-line-1">THE ART</span>
+                    <span class="title-line title-line-2">OF LIFE</span>
+                  </h1>
+                  <div class="slide-script-badge">
+                    <span class="script-text">Portraits</span>
+                    <div class="painting-short-desc">
+                      <span class="desc-author">Johannes Vermeer &bull; c. 1665</span>
+                      <span class="desc-text">Girl with a Pearl Earring &mdash; An immortal study of light &amp; intimacy</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Slide 2: THE ART OF GOD (Vincent van Gogh) -->
+          <section class="slide" data-index="1" id="slide-1">
+            <div class="slide-bg-wrapper">
+              <div class="slide-bg" style="background-image: url('./assets/master2.jpg');"></div>
+              <div class="slide-vignette"></div>
+            </div>
+            <div class="slide-content-container">
+              <div class="slide-content-inner">
+                <div class="slide-title-wrapper">
+                  <h2 class="slide-main-title">
+                    <span class="title-line title-line-1">THE ART</span>
+                    <span class="title-line title-line-2">OF GOD</span>
+                  </h2>
+                  <div class="slide-script-badge">
+                    <span class="script-text">Nature</span>
+                    <div class="painting-short-desc">
+                      <span class="desc-author">Vincent van Gogh &bull; 1889</span>
+                      <span class="desc-text">The Starry Night &mdash; A luminous cosmic vortex of emotion &amp; transcendence</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Slide 3: A WALK IN NATURE (Caspar David Friedrich) -->
+          <section class="slide" data-index="2" id="slide-2">
+            <div class="slide-bg-wrapper">
+              <div class="slide-bg" style="background-image: url('./assets/master3.jpg');"></div>
+              <div class="slide-vignette"></div>
+            </div>
+            <div class="slide-content-container">
+              <div class="slide-content-inner">
+                <div class="slide-title-wrapper">
+                  <h2 class="slide-main-title">
+                    <span class="title-line title-line-1">A WALK IN</span>
+                    <span class="title-line title-line-2">NATURE</span>
+                  </h2>
+                  <div class="slide-script-badge">
+                    <span class="script-text">Nature</span>
+                    <div class="painting-short-desc">
+                      <span class="desc-author">Caspar David Friedrich &bull; 1818</span>
+                      <span class="desc-text">Wanderer above the Sea of Fog &mdash; Contemplation of the infinite sublime</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Slide 4: ECHOES OF SILENCE (Raphael) -->
+          <section class="slide" data-index="3" id="slide-3">
+            <div class="slide-bg-wrapper">
+              <div class="slide-bg" style="background-image: url('./assets/master4.jpg');"></div>
+              <div class="slide-vignette"></div>
+            </div>
+            <div class="slide-content-container">
+              <div class="slide-content-inner">
+                <div class="slide-title-wrapper">
+                  <h2 class="slide-main-title">
+                    <span class="title-line title-line-1">ECHOES OF</span>
+                    <span class="title-line title-line-2">SILENCE</span>
+                  </h2>
+                  <div class="slide-script-badge">
+                    <span class="script-text">Spaces</span>
+                    <div class="painting-short-desc">
+                      <span class="desc-author">Raphael &bull; 1509&ndash;1511</span>
+                      <span class="desc-text">The School of Athens &mdash; Classical harmony of intellect &amp; architecture</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Slide 5: DREAMS & SHADOWS (Gustav Klimt) -->
+          <section class="slide" data-index="4" id="slide-4">
+            <div class="slide-bg-wrapper">
+              <div class="slide-bg" style="background-image: url('./assets/master5.jpg');"></div>
+              <div class="slide-vignette"></div>
+            </div>
+            <div class="slide-content-container">
+              <div class="slide-content-inner">
+                <div class="slide-title-wrapper">
+                  <h2 class="slide-main-title">
+                    <span class="title-line title-line-1">DREAMS &</span>
+                    <span class="title-line title-line-2">SHADOWS</span>
+                  </h2>
+                  <div class="slide-script-badge">
+                    <span class="script-text">Couture</span>
+                    <div class="painting-short-desc">
+                      <span class="desc-author">Gustav Klimt &bull; 1907&ndash;1908</span>
+                      <span class="desc-text">The Kiss (Der Kuss) &mdash; Golden Phase symbolist embrace on a wildflower meadow</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Scroll transition indicator prompt on last slide -->
+            <div class="scroll-to-home-indicator" id="scrollToHomeIndicator">
+              <span>Scroll to enter 3D Categories Home Screen</span>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <polyline points="19 12 12 19 5 12"></polyline>
+              </svg>
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </section>
+
+    <!-- ==========================================================================
+         VIEW 2: HOME SCREEN (RETRO ROYALE GRAND GALLERY 3D COVERFLOW)
+         ========================================================================== -->
+    <section class="screen-view home-screen-view is-active-view" id="homeScreenView">
+      
+
+
+      <!-- Royal Gallery Ambient Lighting Overlay -->
+      <div class="royal-gallery-lighting" aria-hidden="true">
+        <div class="royal-ambient-glow"></div>
+        <div class="royal-wall-shadow-vignette"></div>
+      </div>
+
+      <main class="carousel-stage-section">
+        
+        <!-- Left Chevron Nav Button (Circular Dark Glass & Fine Gold Rim) -->
+        <button class="carousel-nav-btn prev-btn" id="prevBtn" aria-label="Previous Category">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <!-- 3D Cylindrical Cards Track Container -->
+        <div class="carousel-3d-scene" id="carouselScene">
+          <div class="carousel-cards-track" id="cardsTrack">
+            <!-- Curated Royal Baroque Category Cards Injected via JavaScript -->
+          </div>
+        </div>
+
+
+        <!-- Right Chevron Nav Button (Circular Dark Glass & Fine Gold Rim) -->
+        <button class="carousel-nav-btn next-btn" id="nextBtn" aria-label="Next Category">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+
+      </main>
+
+      <!-- Bottom Category Navigation & Quick Scroller -->
+      <div class="home-bottom-bar">
+        <a href="index.html?skipIntro=true" class="return-to-landing-btn" id="returnToLandingBtn" aria-label="Back to Home">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>BACK</span>
+        </a>
+
+        <div class="carousel-pagination-wrapper">
+          <span class="pagination-arrow-nav pagination-arrow-left">&larr;</span>
+          <div class="carousel-pagination-track">
+            <div id="carouselProgressFill" class="carousel-progress-fill"></div>
+          </div>
+          <div class="carousel-pagination" id="carouselPagination">
+            <!-- 20 indicator dots generated -->
+          </div>
+          <span class="pagination-arrow-nav pagination-arrow-right">&rarr;</span>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==========================================================================
+         VIEW 3: VINTAGE DIARY ARCHIVE (20 CATEGORIES INTERACTIVE PAGE FLIP DIARY)
+         ========================================================================== -->
+    <section class="screen-view library-screen-view" id="libraryScreenView">
+      
+      <!-- Diary Top Header Bar -->
+      <div class="library-header-bar">
+        <div class="library-header-left">
+          <button class="library-back-btn" id="libraryBackToHomeBtn" aria-label="Back to 3D Categories" title="Back to 3D Categories">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <div class="library-title-group">
+            <h2 class="library-heading" id="libraryActiveCategoryHeading">CURATOR'S ARCHIVE DIARY</h2>
+            <span class="library-subheading" id="libraryActiveCategorySubheading">20 Curated Categories &bull; Flip diary pages to explore fine art chronicles</span>
+          </div>
+        </div>
+
+        <!-- Quick Category Index Pill / Counter -->
+        <div class="diary-category-indicator" id="diaryCategoryIndicator">
+          <span class="diary-indicator-counter" id="diaryIndicatorCounter">01 / 20</span>
+          <span class="diary-indicator-tag" id="diaryIndicatorTag">HISTORICAL</span>
+        </div>
+      </div>
+
+      <!-- Interactive 3D Vintage Diary Stage -->
+      <div class="vintage-diary-stage" id="vintageDiaryStage">
+        <div class="vintage-diary-book" id="vintageDiaryBook">
+
+          <!-- Left Diary Page -->
+          <div class="diary-page diary-page-left" id="diaryPageLeft">
+            <div class="diary-page-inner">
+              
+              <!-- Category Header Stamp & Badge (Top Left Margin) -->
+              <div class="diary-stamp-header">
+                <span class="diary-stamp-pill" id="diaryStampNum">№ 01</span>
+                <span class="diary-stamp-label" id="diaryStampCat">HISTORICAL</span>
+              </div>
+
+              <!-- Stacked Royal Vintage Masterpiece Frame -->
+              <div class="diary-polaroid-stack" id="diaryPolaroidStack">
+                <!-- Underlay Antique Gilded Mounts -->
+                <div class="polaroid-card polaroid-bg-2"></div>
+                <div class="polaroid-card polaroid-bg-1"></div>
+
+                <!-- Main Royal Baroque Gilded Picture Frame (Click to Inspect) -->
+                <div class="polaroid-card polaroid-main royal-vintage-frame" id="diaryMainPolaroid" title="Click to inspect masterpiece in detail">
+                  <!-- Ornate Baroque Corner Filigrees -->
+                  <div class="royal-corner-ornament corner-top-left"><span>⚜</span></div>
+                  <div class="royal-corner-ornament corner-top-right"><span>⚜</span></div>
+                  <div class="royal-corner-ornament corner-bottom-left"><span>⚜</span></div>
+                  <div class="royal-corner-ornament corner-bottom-right"><span>⚜</span></div>
+
+                  <!-- Top Royal Archival Crest & Wax Seal -->
+                  <div class="royal-crest-seal">
+                    <div class="royal-seal-stamp">
+                      <span class="royal-seal-symbol">⚜</span>
+                    </div>
+                    <div class="royal-seal-ribbon"></div>
+                  </div>
+
+                  <!-- Inner Museum Gilded Beveled Canvas Frame -->
+                  <div class="polaroid-photo-frame royal-photo-frame">
+                    <div class="royal-inner-gold-lip"></div>
+                    <img src="./assets/categories/cat1_historical.jpg" alt="Masterpiece Snapshot" id="diaryPolaroidImg" class="polaroid-img" />
+                    <div class="polaroid-vignette"></div>
+                  </div>
+
+                  <!-- Antique Engraved Brass Curatorial Plaque -->
+                  <div class="polaroid-caption royal-brass-plaque">
+                    <div class="plaque-rivet rivet-left"></div>
+                    <div class="plaque-rivet rivet-right"></div>
+                    <div class="royal-title-row">
+                      <span class="polaroid-title" id="diaryPolaroidTitle">THE NIGHT WATCH</span>
+                    </div>
+                    <div class="royal-artist-row">
+                      <span class="polaroid-artist" id="diaryPolaroidArtist">Rembrandt van Rijn &bull; 1642</span>
+                      <span class="polaroid-inspect-hint">INSPECT &rarr;</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Left Page Bottom Footer (Direct Folio) -->
+              <div class="diary-page-footer footer-left">
+                <span class="diary-folio-stamp">AVĀRTĀ CURATORIAL ARCHIVE</span>
+                <span class="diary-page-number" id="diaryLeftPageNum">P. 01</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Central Spiral Ring Spine -->
+          <div class="diary-binder-spine">
+            <div class="binder-ring ring-1"></div>
+            <div class="binder-ring ring-2"></div>
+            <div class="binder-ring ring-3"></div>
+            <div class="binder-ring ring-4"></div>
+          </div>
+
+          <!-- Right Diary Page -->
+          <div class="diary-page diary-page-right" id="diaryPageRight">
+            <div class="diary-page-inner">
+
+              <!-- Direct Journal Entry Manuscript Content -->
+              <div class="diary-manuscript-container">
+                
+                <!-- Entry Title Header with Calligraphic Flourishes and Fleur-de-lis -->
+                <div class="diary-entry-header">
+                  <span class="note-script-tag" id="diaryNoteTag">ARCHIVE ENTRY • VOL. 01</span>
+                  <div class="diary-title-lockup">
+                    <h3 class="note-main-heading" id="diaryNoteTitle">HISTORICAL</h3>
+                    <span class="heading-flourish-icon">⚜</span>
+                  </div>
+                  <span class="note-sub-heading" id="diaryNoteSubtitle">CHRONICLES</span>
+                  <div class="diary-title-swash-rule"></div>
+                </div>
+
+                <!-- Story Narrative Text (Calligraphic Cursive on Ruled Lines) -->
+                <div class="diary-entry-narrative">
+                  <p class="diary-story-text" id="diaryStoryText">
+                    Rembrandt’s monumental masterwork portraying Captain Frans Banning Cocq and his civic guard company.
+                  </p>
+                </div>
+
+                <!-- Museum Provenance & Archival Data (Clean 2-Column Lines) -->
+                <div class="diary-entry-provenance">
+                  <div class="prov-row">
+                    <span class="prov-label">ERA / MOVEMENT:</span>
+                    <span class="prov-value" id="diaryProvEra">DUTCH GOLDEN AGE</span>
+                  </div>
+                  <div class="prov-row">
+                    <span class="prov-label">MEDIUM:</span>
+                    <span class="prov-value" id="diaryProvMedium">OIL ON CANVAS</span>
+                  </div>
+                  <div class="prov-row">
+                    <span class="prov-label">MUSEUM:</span>
+                    <span class="prov-value" id="diaryProvMuseum">RIJKSMUSEUM, AMSTERDAM</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Right Page Bottom Footer (Direct Folio & Turn Hint) -->
+              <div class="diary-page-footer footer-right">
+                <div class="diary-swipe-hint">
+                  <span class="swipe-hint-icon">&larr;&rarr;</span>
+                  <span class="swipe-hint-text">SWIPE TO TURN PAGE</span>
+                </div>
+                <span class="diary-page-number" id="diaryRightPageNum">P. 02</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Dynamic 3D Page Flip Leaf Sheet -->
+          <div class="diary-page-flip-leaf" id="diaryPageFlipLeaf">
+            <div class="flip-face flip-front" id="flipFaceFront"></div>
+            <div class="flip-face flip-back" id="flipFaceBack"></div>
+          </div>
+
+        </div>
+
+        <!-- 3D Closed Vintage Leather Journal (Displayed after Category 20) -->
+        <div class="vintage-diary-closed-book" id="vintageDiaryClosedBook" title="Click to open the journal">
+          <div class="closed-book-cover">
+            <div class="closed-book-spine-depth"></div>
+            <div class="closed-book-artwork">
+              <img src="./assets/vintage_diary_closed.png?v=clean_v1" alt="AVĀRTĀ Journal Cover" class="closed-book-img" />
+              <div class="closed-book-shine"></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==========================================================================
+         VIEW 4: ROYAL ART EXHIBITION CHAMBER (MASTERPIECE & CURATORIAL SCROLL)
+         ========================================================================== -->
+    <section class="screen-view auction-gallery-view royal-gallery-view" id="auctionGalleryView" aria-label="Royal Art Exhibition">
+      
+      <!-- Architectural Ceiling Ambient Shadow & Warm Radial Wash -->
+      <div class="royal-ceiling-soffit" aria-hidden="true"></div>
+
+      <!-- Luxury Polished Museum Dark Marble Floor Plane with Real Specular Reflections -->
+      <div class="royal-floor-plane" aria-hidden="true">
+        <div class="royal-floor-reflection-overlay"></div>
+        <div class="royal-floor-shadow-base"></div>
+      </div>
+
+      <!-- Dark Luxury Minimal Top Bar -->
+      <header class="auction-top-bar" id="auctionTopBar">
+        <!-- Thin Gold Hairline Progress Bar Indicator -->
+        <div class="auction-progress-track">
+          <div class="auction-progress-fill" id="auctionProgressFill"></div>
+        </div>
+
+        <div class="auction-top-inner">
+          <div class="auction-top-brand-group">
+            <span class="auction-brand-tag">AVĀRTĀ &reg;</span>
+            <span class="top-bar-divider">&bull;</span>
+            <div class="auction-category-name" id="auctionCategoryName">HISTORICAL CHRONICLES</div>
+          </div>
+          
+          <div class="auction-top-right">
+            <span class="auction-lot-counter" id="auctionLotCounter">LOT 01 OF 20</span>
+            <button class="auction-exit-btn" id="auctionExitBtn" aria-label="Exit Gallery" type="button">
+              <span>EXIT GALLERY</span>
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Exhibition Stage: Royal Chamber with Framed Masterpiece & Antique Scroll -->
+      <main class="auction-stage-container royal-stage-container" id="auctionStageContainer">
+        
+        <!-- Navigation Arrow Buttons (Floating Dark Glass & Warm Gold Rim) -->
+        <button class="auction-nav-btn auction-prev-btn" id="auctionPrevBtn" aria-label="Previous Masterpiece" type="button">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <!-- Grand Dual-Display Royal Chamber: Left Masterpiece, Right Antique Scroll -->
+        <div class="royal-chamber-display" id="royalChamberDisplay">
+          
+          <!-- LEFT COLUMN: GILDED FRAME MASTERPIECE + PLAQUE -->
+          <div class="royal-canvas-column" id="royalCanvasColumn">
+
+            <!-- Framed Artwork Assembly -->
+            <div class="royal-frame-assembly" id="auctionFrame">
+              <div class="royal-gold-frame-wrap">
+                <div class="royal-canvas-box">
+                  <img src="./assets/categories/cat1_historical.jpg" alt="Masterpiece Canvas" id="auctionPaintingImg" class="royal-canvas-img" draggable="false" />
+                  <div class="royal-canvas-glaze" aria-hidden="true"></div>
+                  <div class="royal-canvas-varnish" aria-hidden="true"></div>
+                </div>
+                <img src="./assets/ornate_gold_frame.png" alt="Ornate Baroque Gold Frame" class="royal-frame-border-img" draggable="false" />
+              </div>
+
+              <!-- Classical Engraved Brass Museum Plaque -->
+              <div class="royal-brass-plaque" id="royalBrassPlaque">
+                <div class="plaque-corner-screw screw-tl"></div>
+                <div class="plaque-corner-screw screw-tr"></div>
+                <div class="plaque-corner-screw screw-bl"></div>
+                <div class="plaque-corner-screw screw-br"></div>
+                <div class="royal-plaque-inner">
+                  <div class="royal-plaque-title" id="plaqueTitle">THE NIGHT WATCH</div>
+                  <div class="royal-plaque-artist" id="plaqueArtist">REMBRANDT VAN RIJN</div>
+                  <div class="royal-plaque-year" id="plaqueYear">1642</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floor Reflection Overlay for Canvas -->
+            <div class="royal-floor-reflection reflection-left" aria-hidden="true"></div>
+
+          </div>
+
+          <!-- RIGHT COLUMN: UNROLLED ANTIQUE PARCHMENT SCROLL -->
+          <div class="royal-scroll-column" id="royalScrollColumn">
+
+            <!-- Antique Parchment Scroll Assembly with Grand Unveiling Roll-Down -->
+            <div class="royal-scroll-assembly is-rolling-down" id="royalScrollAssembly">
+              <div class="scroll-roll-canvas" id="scrollRollCanvas">
+                <!-- Background Parchment Image with Finials -->
+                <img src="./assets/antique_parchment_scroll.png" alt="Antique Parchment Scroll" class="royal-scroll-bg-img" draggable="false" />
+
+                <!-- Overlay Text & Curatorial Manuscript -->
+                <div class="scroll-manuscript-content" id="scrollManuscriptContent">
+                  
+                  <div class="scroll-header">
+                    <h2 class="scroll-artwork-title" id="scrollArtworkTitle">THE NIGHT WATCH</h2>
+                    <div class="scroll-artist-name" id="scrollArtistName">REMBRANDT VAN RIJN</div>
+                    <div class="scroll-year-tag" id="scrollYearTag">1642</div>
+                  </div>
+
+                  <div class="scroll-ornament-divider" aria-hidden="true">
+                    <span class="divider-swash-line"></span>
+                    <span class="divider-icon">⚜</span>
+                    <span class="divider-swash-line"></span>
+                  </div>
+
+                  <!-- Colon-Aligned Metadata Table -->
+                  <div class="scroll-metadata-table">
+                    <div class="scroll-meta-row">
+                      <span class="meta-field-label">ARTIST</span>
+                      <span class="meta-field-colon">:</span>
+                      <span class="meta-field-value" id="scrollMetaArtist">Rembrandt van Rijn</span>
+                    </div>
+                    <div class="scroll-meta-row">
+                      <span class="meta-field-label">YEAR</span>
+                      <span class="meta-field-colon">:</span>
+                      <span class="meta-field-value" id="scrollMetaYear">1642</span>
+                    </div>
+                    <div class="scroll-meta-row">
+                      <span class="meta-field-label">MEDIUM</span>
+                      <span class="meta-field-colon">:</span>
+                      <span class="meta-field-value" id="scrollMetaMedium">Oil on canvas</span>
+                    </div>
+                    <div class="scroll-meta-row">
+                      <span class="meta-field-label">DIMENSIONS</span>
+                      <span class="meta-field-colon">:</span>
+                      <span class="meta-field-value" id="scrollMetaDimensions">363 × 437 cm</span>
+                    </div>
+                    <div class="scroll-meta-row">
+                      <span class="meta-field-label">LOCATION</span>
+                      <span class="meta-field-colon">:</span>
+                      <span class="meta-field-value" id="scrollMetaLocation">Rijksmuseum, Amsterdam</span>
+                    </div>
+                  </div>
+
+                  <div class="scroll-ornament-divider" aria-hidden="true">
+                    <span class="divider-swash-line"></span>
+                    <span class="divider-icon">⚜</span>
+                    <span class="divider-swash-line"></span>
+                  </div>
+
+                  <!-- Curatorial Narrative Paragraph -->
+                  <p class="scroll-narrative-text" id="scrollNarrativeText">
+                    The Night Watch is one of Rembrandt's most celebrated works, known for its dramatic composition, masterful use of light and shadow, and the dynamic portrayal of a militia company.
+                  </p>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Floor Reflection Overlay for Scroll -->
+            <div class="royal-floor-reflection reflection-right" aria-hidden="true"></div>
+
+          </div>
+
+        </div>
+
+        <button class="auction-nav-btn auction-next-btn" id="auctionNextBtn" aria-label="Next Masterpiece" type="button">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+
+      </main>
+
+      <!-- Minimal Bottom Hint Bar -->
+      <footer class="auction-bottom-hint">
+        <span class="hint-swipe-icon">&larr;</span>
+        <span>SWIPE OR USE ARROW KEYS TO EXPLORE EXHIBITION</span>
+        <span class="hint-swipe-icon">&rarr;</span>
+      </footer>
+
+    </section>
+
+  </div>
+
+  <!-- Masterpiece Inspect Lightbox Modal (Royal Curatorial Theme) -->
+  <div class="modal-overlay" id="artworkInspectModal">
+    <div class="modal-backdrop" id="artworkModalBackdrop"></div>
+    <div class="modal-content artwork-lightbox-content royal-lightbox-content">
+      <!-- Royal Corner Filigrees -->
+      <div class="royal-corner-ornament corner-top-left"><span>⚜</span></div>
+      <div class="royal-corner-ornament corner-top-right"><span>⚜</span></div>
+      <div class="royal-corner-ornament corner-bottom-left"><span>⚜</span></div>
+      <div class="royal-corner-ornament corner-bottom-right"><span>⚜</span></div>
+
+      <button class="modal-close-btn royal-close-btn" id="closeArtworkModalBtn" title="Close Archive Inspection">&times;</button>
+      
+      <div class="lightbox-body">
+        <!-- Left: Royal Baroque Gilded Canvas Frame -->
+        <div class="lightbox-image-column royal-lightbox-frame">
+          <div class="royal-inner-gold-lip"></div>
+          <img src="" alt="Artwork Preview" id="lightboxImage" class="lightbox-img">
+          <div class="lightbox-frame-shine"></div>
+        </div>
+
+        <!-- Right: Royal Archival Curatorial Document -->
+        <div class="lightbox-details-column">
+          <div class="lightbox-badge royal-badge" id="lightboxCategory">⚜ HISTORICAL ART ⚜</div>
+          <h3 class="lightbox-title royal-title" id="lightboxTitle">The Coronation of Napoleon</h3>
+          <p class="lightbox-artist royal-artist" id="lightboxArtist">Jacques-Louis David &bull; 1807</p>
+          
+          <div class="lightbox-divider royal-divider">
+            <span class="royal-divider-line"></span>
+            <span class="royal-divider-fleur">⚜</span>
+            <span class="royal-divider-line"></span>
+          </div>
+          
+          <p class="lightbox-description royal-description" id="lightboxDescription">
+            Masterpiece description depicting historical grandeur, artistic technique, composition, and emotional resonance.
+          </p>
+
+          <div class="lightbox-meta-grid royal-meta-grid">
+            <div class="meta-item royal-meta-item">
+              <span class="meta-label">ERA / MOVEMENT</span>
+              <span class="meta-value" id="lightboxEra">Neoclassicism</span>
+            </div>
+            <div class="meta-item royal-meta-item">
+              <span class="meta-label">MEDIUM</span>
+              <span class="meta-value" id="lightboxMedium">Oil on canvas</span>
+            </div>
+            <div class="meta-item royal-meta-item meta-full-width">
+              <span class="meta-label">MUSEUM PROVENANCE</span>
+              <span class="meta-value" id="lightboxMuseum">Musée du Louvre, Paris</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Background Music Loop Engine: "The Sound of Magic (2022) - Opening Theme" -->
+  <script>
+    (function () {
+      const bgAudio = new Audio();
+      bgAudio.loop = true;
+      bgAudio.volume = 0.85;
+
+      const audioSources = [
+        'audio/The Sound of Magic (2022) - Opening Theme.mp3',
+        'audio/The Sound of Magic - Opening Theme.mp3',
+        'audio/sound_of_magic.mp3',
+        'audio/fantasy.mp3',
+        'audio/mystical.mp3',
+        'assets/audio/ambient.mp3'
+      ];
+
+      let audioSourceIdx = 0;
+      function loadNextSource() {
+        if (audioSourceIdx >= audioSources.length) return;
+        bgAudio.src = audioSources[audioSourceIdx];
+      }
+      loadNextSource();
+
+      bgAudio.addEventListener('error', function () {
+        audioSourceIdx++;
+        if (audioSourceIdx < audioSources.length) {
+          loadNextSource();
+        }
+      });
+
+      // Sync playback position between index.html and categories.html
+      const savedPos = sessionStorage.getItem('avarta_bg_audio_pos');
+      if (savedPos) {
+        bgAudio.currentTime = parseFloat(savedPos);
+      }
+
+      setInterval(function () {
+        if (!bgAudio.paused && bgAudio.currentTime > 0) {
+          sessionStorage.setItem('avarta_bg_audio_pos', bgAudio.currentTime);
+          sessionStorage.setItem('avarta_bg_audio_playing', 'true');
+        }
+      }, 500);
+
+      window.addEventListener('beforeunload', function () {
+        if (!bgAudio.paused) {
+          sessionStorage.setItem('avarta_bg_audio_pos', bgAudio.currentTime);
+          sessionStorage.setItem('avarta_bg_audio_playing', 'true');
+        }
+      });
+
+      function playAudioSeamlessly() {
+        const promise = bgAudio.play();
+        if (promise !== undefined) {
+          promise.catch(function (err) {
+            function playOnUserTouch() {
+              bgAudio.play().catch(function () {});
+              ['click', 'touchstart', 'keydown', 'pointerdown'].forEach(function (evt) {
+                document.removeEventListener(evt, playOnUserTouch);
+              });
+            }
+            ['click', 'touchstart', 'keydown', 'pointerdown'].forEach(function (evt) {
+              document.addEventListener(evt, playOnUserTouch, { once: true });
+            });
+          });
+        }
+      }
+
+      // Resume playing on categories page load
+      playAudioSeamlessly();
+
+      window.avartaBgAudio = {
+        play: playAudioSeamlessly,
+        pause: function () {
+          sessionStorage.setItem('avarta_bg_audio_playing', 'false');
+          try { bgAudio.pause(); } catch (e) {}
+        },
+        stop: function () {
+          sessionStorage.setItem('avarta_bg_audio_playing', 'false');
+          try { bgAudio.pause(); bgAudio.currentTime = 0; } catch (e) {}
+        }
+      };
+    })();
+  </script>
+  <!-- Scripts -->
+  <script src="./categories.js?v=frame_fit_v2"></script>
+  <script src="/assets/cursor/cursor-trail.js" defer></script>
+</body>
+</html>

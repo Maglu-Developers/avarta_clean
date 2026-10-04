@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apple "Liquid Glass" Toggle Switch Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 25%, #ffffff 0%, #f4f3fb 50%, #e9e6f7 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      overflow-x: hidden;
+      padding: 40px 20px;
+    }
+
+    /* Ambient background gradient meshes to showcase real glass refraction */
+    .ambient-mesh-1 {
+      position: fixed;
+      top: -100px;
+      left: -100px;
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(192, 132, 252, 0.4) 0%, transparent 70%);
+      filter: blur(50px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-mesh-2 {
+      position: fixed;
+      bottom: -100px;
+      right: -100px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, transparent 70%);
+      filter: blur(50px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .demo-container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      gap: 32px;
+    }
+
+    .header-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #7c3aed;
+      background: rgba(237, 233, 254, 0.85);
+      border: 1px solid rgba(196, 181, 253, 0.6);
+      border-radius: 9999px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+    }
+
+    .title {
+      font-size: clamp(32px, 5.5vw, 48px);
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #64748b;
+      max-width: 440px;
+      margin: 8px auto 0;
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       LIQUID GLASS TOGGLE STYLES
+       ========================================================================== */
+    .glass-toggle-wrapper {
+      --glass-blur: 3.5px;
+      --glass-refraction: 18px;
+      --glass-tint: rgba(255, 255, 255, 0.05);
+      --glass-rim: rgba(255, 255, 255, 0.95);
+      --mx: 50%;
+      --my: 50%;
+
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-user-select: none;
+      padding: 20px 0;
+    }
+
+    .glass-switch {
+      position: relative;
+      width: 240px;
+      height: 80px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      border-radius: 9999px;
+      cursor: pointer;
+      outline: none;
+      transform-origin: center center;
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-switch:hover {
+      transform: scale(1.025);
+    }
+
+    .glass-switch:active {
+      transform: scale(0.96);
+    }
+
+    .glass-switch:focus-visible {
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.45);
+    }
+
+    /* Ambient Diffuse Shadow */
+    .glass-diffuse-shadow {
+      position: absolute;
+      inset: -6px;
+      border-radius: 9999px;
+      background: radial-gradient(ellipse at 50% 65%, rgba(148, 163, 184, 0.32) 0%, rgba(148, 163, 184, 0.12) 55%, transparent 75%);
+      filter: blur(10px);
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .glass-switch:hover .glass-diffuse-shadow {
+      opacity: 0.9;
+    }
+
+    /* Outer Drop Shadow */
+    .glass-outer-shadow {
+      position: absolute;
+      inset: 0;
+      border-radius: 9999px;
+      box-shadow: 
+        0 14px 34px -4px rgba(100, 116, 139, 0.24),
+        0 4px 14px rgba(148, 163, 184, 0.18);
+      pointer-events: none;
+    }
+
+    /* LAYER 1: TEXT LABEL BEHIND THE GLASS */
+    .glass-label-layer {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .glass-label {
+      position: absolute;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: #0f172a;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8), 0 -1px 1px rgba(0, 0, 0, 0.08);
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-label.off {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .glass-switch.checked .glass-label.off {
+      opacity: 0;
+      transform: translateY(-12px) scale(0.92);
+    }
+
+    .glass-label.on {
+      opacity: 0;
+      transform: translateY(12px) scale(0.92);
+    }
+
+    .glass-switch.checked .glass-label.on {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* LAYER 2: THICK REFRACTIVE GLASS SLAB (PILL BODY) */
+    .glass-body {
+      position: absolute;
+      inset: 0;
+      border-radius: 9999px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 2;
+      backdrop-filter: url(#glass-refraction-filter) blur(var(--glass-blur)) saturate(1.7) brightness(1.06);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.7) brightness(1.06);
+      background-color: var(--glass-tint);
+      box-shadow: 
+        inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1.5px 2px 0 rgba(255, 255, 255, 0.7),
+        inset 1.5px 0 2px 0 rgba(255, 255, 255, 0.8),
+        inset -1.5px 0 2px 0 rgba(255, 255, 255, 0.6),
+        inset 0 0 16px 2px rgba(255, 255, 255, 0.22),
+        0 0 0 1px rgba(255, 255, 255, 0.65);
+      transition: background-color 0.4s ease;
+    }
+
+    .glass-switch.checked .glass-body {
+      --glass-tint: rgba(56, 189, 248, 0.14);
+    }
+
+    /* Diagonal Molded Glass Ridges */
+    .glass-ridges-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Pointer-following specular reflection sheen */
+    .glass-specular-sheen {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle 90px at var(--mx) var(--my), rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.15) 45%, transparent 70%);
+      mix-blend-mode: overlay;
+      opacity: 0.6;
+      transition: opacity 0.2s ease;
+    }
+
+    .glass-switch:hover .glass-specular-sheen {
+      opacity: 1;
+    }
+
+    /* Rainbow Prism Dispersion Overlay */
+    .glass-rainbow-caustics {
+      position: absolute;
+      inset: 0;
+      border-radius: 9999px;
+      pointer-events: none;
+      background: linear-gradient(135deg, 
+        rgba(255, 120, 200, 0.18) 0%, 
+        rgba(120, 230, 255, 0.22) 18%, 
+        rgba(255, 255, 255, 0.08) 40%, 
+        rgba(255, 240, 140, 0.15) 75%, 
+        rgba(180, 120, 255, 0.22) 100%
+      );
+      mix-blend-mode: screen;
+    }
+
+    .glass-hairline-rim {
+      position: absolute;
+      inset: 1px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      pointer-events: none;
+    }
+
+    /* LAYER 3: CRYSTAL GLASS CURSOR-ARROW THUMB */
+    .glass-thumb {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 56px;
+      height: 56px;
+      z-index: 3;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: translateX(0);
+    }
+
+    .glass-thumb:active {
+      cursor: grabbing;
+    }
+
+    .glass-switch.checked .glass-thumb {
+      transform: translateX(168px);
+    }
+
+    .glass-arrow-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 6px 14px rgba(100, 116, 139, 0.35));
+      transform: rotate(-42deg) translate(2px, 2px);
+    }
+
+    .glass-arrow-path {
+      fill: rgba(255, 255, 255, 0.28);
+      stroke: rgba(255, 255, 255, 0.95);
+      stroke-width: 2.2;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+      backdrop-filter: url(#thumb-refraction-filter) blur(3px) saturate(1.8);
+      -webkit-backdrop-filter: blur(3px) saturate(1.8);
+    }
+
+    /* Controls Panel */
+    .controls-card {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      text-align: left;
+    }
+
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #8b5cf6;
+      cursor: pointer;
+    }
+
+    .size-btn-group {
+      display: inline-flex;
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 2px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .size-btn {
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .size-btn.active {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient light blobs -->
+  <div class="ambient-mesh-1"></div>
+  <div class="ambient-mesh-2"></div>
+
+  <!-- ========================================================================
+       SVG REFRACTION, CHROMATIC DISPERSION & SPECULAR FILTERS
+       ======================================================================== -->
+  <svg width="0" height="0" style="position: absolute; overflow: hidden; pointer-events: none;" aria-hidden="true">
+    <defs>
+      <!-- Main Glass Slab Refraction & Chromatic Aberration Filter -->
+      <filter id="glass-refraction-filter" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.015 0.04" numOctaves="3" seed="42" result="noiseBase" />
+        <feComponentTransfer in="noiseBase" result="ridgeNormals">
+          <feFuncR type="linear" slope="2.4" intercept="-0.65" />
+          <feFuncG type="linear" slope="2.4" intercept="-0.65" />
+          <feFuncB type="linear" slope="2.4" intercept="-0.65" />
+        </feComponentTransfer>
+
+        <!-- Red Channel Displacement -->
+        <feDisplacementMap in="SourceGraphic" in2="ridgeNormals" scale="22" xChannelSelector="R" yChannelSelector="G" result="dispRed" />
+        <feColorMatrix in="dispRed" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="redOnly" />
+
+        <!-- Green Channel Displacement -->
+        <feDisplacementMap in="SourceGraphic" in2="ridgeNormals" scale="17" xChannelSelector="R" yChannelSelector="G" result="dispGreen" />
+        <feColorMatrix in="dispGreen" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="greenOnly" />
+
+        <!-- Blue Channel Displacement -->
+        <feDisplacementMap in="SourceGraphic" in2="ridgeNormals" scale="12" xChannelSelector="R" yChannelSelector="G" result="dispBlue" />
+        <feColorMatrix in="dispBlue" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blueOnly" />
+
+        <!-- Screen Blend for Prismatic Fringing -->
+        <feBlend mode="screen" in="redOnly" in2="greenOnly" result="blendRG" />
+        <feBlend mode="screen" in="blendRG" in2="blueOnly" result="chromaImage" />
+      </filter>
+
+      <!-- Thumb Arrow Refraction Filter -->
+      <filter id="thumb-refraction-filter" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+        <feTurbulence type="turbulence" baseFrequency="0.04 0.08" numOctaves="2" seed="89" result="thumbNoise" />
+        <feDisplacementMap in="SourceGraphic" in2="thumbNoise" scale="16" xChannelSelector="R" yChannelSelector="G" result="thumbDisplaced" />
+      </filter>
+
+      <!-- Arrow Rainbow Gradient -->
+      <linearGradient id="arrow-rainbow" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="rgba(255, 140, 210, 0.55)" />
+        <stop offset="35%" stop-color="rgba(120, 240, 255, 0.6)" />
+        <stop offset="70%" stop-color="rgba(255, 255, 255, 0.3)" />
+        <stop offset="100%" stop-color="rgba(255, 230, 120, 0.55)" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <main class="demo-container">
+    <header>
+      <span class="header-badge">Apple-Grade Physical Optics</span>
+      <h1 class="title">Liquid Glass Toggle</h1>
+      <p class="subtitle">Thick molded crystal glass, chromatic prism dispersion, and beveled cursor-arrow spring thumb.</p>
+    </header>
+
+    <!-- ======================================================================
+         THE LIQUID GLASS TOGGLE COMPONENT
+         ====================================================================== -->
+    <div class="glass-toggle-wrapper" id="toggleWrapper">
+      <button 
+        type="button" 
+        class="glass-switch" 
+        id="glassSwitch" 
+        role="switch" 
+        aria-checked="false" 
+        aria-label="Confirm toggle"
+      >
+        <!-- Ambient Diffuse & Directional Shadows -->
+        <div class="glass-diffuse-shadow"></div>
+        <div class="glass-outer-shadow"></div>
+
+        <!-- LAYER 1: TEXT BEHIND THE GLASS -->
+        <div class="glass-label-layer">
+          <span class="glass-label off" id="labelOff">Confirm</span>
+          <span class="glass-label on" id="labelOn">Confirmed</span>
+        </div>
+
+        <!-- LAYER 2: THICK REFRACTIVE GLASS SLAB -->
+        <div class="glass-body">
+          <!-- Molded Diagonal Ridges & Bevel Cleavages -->
+          <svg class="glass-ridges-svg" viewBox="0 0 240 80" preserveAspectRatio="none">
+            <!-- Diagonal ridge 1 (Cuts across 'C' and 'o') -->
+            <path d="M 52 0 Q 94 38 126 80" fill="none" stroke="rgba(255, 255, 255, 0.85)" stroke-width="2.2" style="filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.9));" />
+            <path d="M 50.5 0 Q 92.5 38 124.5 80" fill="none" stroke="rgba(0, 240, 255, 0.35)" stroke-width="1.8" />
+            <path d="M 53.5 0 Q 95.5 38 127.5 80" fill="none" stroke="rgba(255, 90, 190, 0.35)" stroke-width="1.8" />
+
+            <!-- Diagonal ridge 2 (Cuts right above 'firm') -->
+            <path d="M 136 0 Q 168 32 195 80" fill="none" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.8" />
+            <path d="M 134.5 0 Q 166.5 32 193.5 80" fill="none" stroke="rgba(255, 230, 90, 0.3)" stroke-width="1.4" />
+            <path d="M 137.5 0 Q 169.5 32 196.5 80" fill="none" stroke="rgba(180, 100, 255, 0.35)" stroke-width="1.4" />
+
+            <!-- Sweeping upper curve -->
+            <path d="M 10 22 C 70 8, 170 30, 230 14" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.4" opacity="0.75" />
+          </svg>
+
+          <!-- Dynamic pointer specular highlight -->
+          <div class="glass-specular-sheen" id="glassSheen"></div>
+
+          <!-- Iridescent rainbow caustics -->
+          <div class="glass-rainbow-caustics"></div>
+
+          <!-- Inner hairline bevel border -->
+          <div class="glass-hairline-rim"></div>
+        </div>
+
+        <!-- LAYER 3: CRYSTAL GLASS ARROW THUMB -->
+        <div class="glass-thumb" id="glassThumb">
+          <svg viewBox="0 0 56 56" class="glass-arrow-svg">
+            <path class="glass-arrow-path" d="M 12 6 C 14 3, 18 3, 20 6 L 46 38 C 48 41, 46 45, 43 45 L 29 41 L 18 52 C 16 54, 12 53, 12 50 Z" />
+            <path d="M 15 10 L 40 37 L 30 39 L 20 48 Z" fill="url(#arrow-rainbow)" opacity="0.65" style="mix-blend-mode: screen;" />
+            <line x1="16" y1="8" x2="29" y2="40" stroke="rgba(255, 255, 255, 0.95)" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </div>
+      </button>
+    </div>
+
+    <!-- Status display -->
+    <p style="font-size: 13px; color: #64748b; font-weight: 500;">
+      Current State: <strong id="statusText" style="color: #0f172a;">OFF (Confirm)</strong> &bull; Click or press Space to toggle
+    </p>
+
+    <!-- Tuning Controls Card -->
+    <div class="controls-card">
+      <div class="control-row">
+        <span>Component Size</span>
+        <div class="size-btn-group">
+          <button class="size-btn" onclick="setSize('sm')">SM</button>
+          <button class="size-btn active" onclick="setSize('md')">MD</button>
+          <button class="size-btn" onclick="setSize('lg')">LG</button>
+        </div>
+      </div>
+
+      <div class="slider-row">
+        <div class="slider-header">
+          <span>Glass Blur</span>
+          <span id="blurValText">3.5px</span>
+        </div>
+        <input type="range" min="0" max="8" step="0.5" value="3.5" id="blurSlider">
+      </div>
+
+      <div class="slider-row">
+        <div class="slider-header">
+          <span>Chromatic Aberration & Refraction</span>
+          <span id="refractValText">18px</span>
+        </div>
+        <input type="range" min="4" max="36" step="1" value="18" id="refractSlider">
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const wrapper = document.getElementById('toggleWrapper');
+    const switchBtn = document.getElementById('glassSwitch');
+    const statusText = document.getElementById('statusText');
+    const blurSlider = document.getElementById('blurSlider');
+    const blurValText = document.getElementById('blurValText');
+    const refractSlider = document.getElementById('refractSlider');
+    const refractValText = document.getElementById('refractValText');
+
+    let isChecked = false;
+
+    function toggle() {
+      isChecked = !isChecked;
+      switchBtn.classList.toggle('checked', isChecked);
+      switchBtn.setAttribute('aria-checked', isChecked ? 'true' : 'false');
+      statusText.innerHTML = isChecked ? '<span style="color:#0284c7;">ON (Confirmed)</span>' : '<span style="color:#0f172a;">OFF (Confirm)</span>';
+    }
+
+    switchBtn.addEventListener('click', toggle);
+
+    // Keyboard support (Space / Enter)
+    switchBtn.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+
+    // Pointer-following specular reflection coordinates (--mx, --my)
+    switchBtn.addEventListener('pointermove', (e) => {
+      const rect = switchBtn.getBoundingClientRect();
+      const x = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+      const y = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height));
+      wrapper.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+      wrapper.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+    });
+
+    // Tilt with device orientation if available on mobile
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', (e) => {
+        if (e.gamma !== null && e.beta !== null) {
+          const x = Math.min(1, Math.max(0, (e.gamma + 45) / 90));
+          const y = Math.min(1, Math.max(0, (e.beta + 45) / 90));
+          wrapper.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+          wrapper.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+        }
+      });
+    }
+
+    // Sliders
+    blurSlider.addEventListener('input', (e) => {
+      const val = e.target.value;
+      blurValText.textContent = val + 'px';
+      wrapper.style.setProperty('--glass-blur', val + 'px');
+    });
+
+    refractSlider.addEventListener('input', (e) => {
+      const val = e.target.value;
+      refractValText.textContent = val + 'px';
+      const dispRed = document.querySelector('feDisplacementMap[result="dispRed"]');
+      const dispGreen = document.querySelector('feDisplacementMap[result="dispGreen"]');
+      const dispBlue = document.querySelector('feDisplacementMap[result="dispBlue"]');
+      if (dispRed) dispRed.setAttribute('scale', Math.round(val * 1.2));
+      if (dispGreen) dispGreen.setAttribute('scale', Math.round(val));
+      if (dispBlue) dispBlue.setAttribute('scale', Math.round(val * 0.7));
+    });
+
+    // Sizes
+    function setSize(s) {
+      document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toLowerCase() === s);
+      });
+      if (s === 'sm') {
+        switchBtn.style.width = '180px';
+        switchBtn.style.height = '60px';
+      } else if (s === 'lg') {
+        switchBtn.style.width = '300px';
+        switchBtn.style.height = '100px';
+      } else {
+        switchBtn.style.width = '240px';
+        switchBtn.style.height = '80px';
+      }
+    }
+  </script>
+</body>
+</html>

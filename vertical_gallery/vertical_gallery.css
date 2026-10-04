@@ -1,0 +1,435 @@
+/**
+ * VERTICAL SLIDE GALLERY — ISOLATED SCOPED STYLES
+ * High-performance, GPU-accelerated stacked deck transition.
+ * All class names are scoped with .vsg- prefix.
+ */
+
+.vsg-root {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  background-color: #06080e;
+  background-image: url('collection_hall_bg.png?v=hall_bg_v4');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  color: #ffffff;
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: 'Cinzel', 'Times New Roman', serif;
+  box-sizing: border-box;
+}
+
+.vsg-root,
+.vsg-root *,
+.vsg-root *::before,
+.vsg-root *::after,
+.vsg-root button,
+.vsg-root a {
+  box-sizing: border-box;
+  font-family: 'Cinzel', 'Times New Roman', serif !important;
+}
+
+/* ==========================================================================
+   1. FULL-WIDTH, FULL-BLEED ARCHITECTURAL GALLERY HALL BACKDROP
+   ========================================================================== */
+.vsg-ambient-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url('collection_hall_bg.png?v=hall_bg_v4');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.vsg-ambient-layer {
+  display: none !important;
+}
+
+/* Atmospheric subtle vignette to maintain depth and crisp contrast */
+.vsg-ambient-scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.35) 85%, rgba(0, 0, 0, 0.65) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ==========================================================================
+   2. STACKED DECK VIEWPORT & SLIDES
+   ========================================================================== */
+.vsg-deck-viewport {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  cursor: grab;
+  touch-action: none;
+}
+
+.vsg-deck-viewport:active {
+  cursor: grabbing;
+}
+
+.vsg-slide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(66vw, 900px);
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.vsg-slide.vsg-slide-active {
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+   3. SHARP INSET IMAGE FRAME
+   ========================================================================== */
+.vsg-card-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9.6;
+  max-height: 56vh;
+  border-radius: 14px;
+  overflow: hidden;
+  background-color: #0b0e17;
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.85),
+    0 4px 16px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(223, 194, 130, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: box-shadow 0.4s ease;
+}
+
+.vsg-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Subtle gradient sheen over inset photo */
+.vsg-card-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(0, 0, 0, 0.1) 60%, rgba(0, 0, 0, 0.35) 100%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   4. CAPTION ROW BELOW INSET (LEFT, CENTER, RIGHT)
+   ========================================================================== */
+.vsg-caption-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 18px;
+  padding: 0 4px;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.vsg-caption-left {
+  font-family: 'Cinzel', 'Times New Roman', serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: #dfc282;
+  min-width: 60px;
+}
+
+.vsg-caption-center {
+  text-align: center;
+  flex: 1;
+  padding: 0 16px;
+}
+
+.vsg-caption-title {
+  font-family: 'Cinzel', 'Times New Roman', serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 5px;
+}
+
+.vsg-caption-sub {
+  font-family: 'Cinzel', 'Times New Roman', serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.vsg-caption-right {
+  font-family: 'Cinzel', 'Times New Roman', serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.6);
+  min-width: 60px;
+  text-align: right;
+}
+
+/* Hide captions on non-active stacked deck cards */
+.vsg-slide:not(.vsg-slide-active) .vsg-caption-row {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* ==========================================================================
+   5. STATIC LEFT PANEL (UNANIMATED)
+   ========================================================================== */
+.vsg-panel-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: auto;
+  max-width: calc(100vw - 72px);
+  padding: 85px 36px 44px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  z-index: 40;
+  pointer-events: auto;
+}
+
+.vsg-brand-block,
+.vsg-meta-block,
+.vsg-right-bottom-group {
+  display: none !important;
+}
+
+.vsg-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 32px;
+  border-radius: 9999px;
+  border: 1px solid rgba(223, 194, 130, 0.48);
+  background: rgba(223, 194, 130, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #dfc282;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  width: fit-content;
+}
+
+.vsg-cta-link:hover {
+  background: #dfc282;
+  color: #070a14;
+  border-color: #dfc282;
+  box-shadow: 0 0 28px rgba(223, 194, 130, 0.45), 0 6px 22px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.vsg-cta-arrow {
+  font-size: 15px;
+  color: inherit;
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: inline-block;
+  line-height: 1;
+}
+
+.vsg-cta-link:hover .vsg-cta-arrow {
+  transform: translateX(6px);
+}
+
+/* ==========================================================================
+   6. STATIC RIGHT PANEL (UNANIMATED)
+   ========================================================================== */
+.vsg-panel-right {
+  display: none !important;
+}
+
+.vsg-meta-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.vsg-meta-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.vsg-meta-fraction {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #dfc282;
+}
+
+.vsg-right-bottom-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.vsg-thumb-preview {
+  width: 72px;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(223, 194, 130, 0.4);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  background-color: #0c0f17;
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.vsg-thumb-preview:hover {
+  transform: scale(1.08);
+  border-color: #dfc282;
+}
+
+.vsg-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.vsg-see-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  color: #dfc282;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.vsg-see-all-btn:hover {
+  color: #ffffff;
+  transform: translateX(-2px);
+}
+
+/* ==========================================================================
+   7. KEYBOARD & SCROLL HINT
+   ========================================================================== */
+.vsg-scroll-hint {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  z-index: 30;
+  pointer-events: none;
+}
+
+.vsg-scroll-mouse-icon {
+  width: 14px;
+  height: 22px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(223, 194, 130, 0.4);
+  position: relative;
+}
+
+.vsg-scroll-wheel-tick {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 4px;
+  background: #dfc282;
+  border-radius: 1px;
+  animation: vsgWheelPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes vsgWheelPulse {
+  0% { transform: translate(-50%, 0); opacity: 1; }
+  60% { transform: translate(-50%, 6px); opacity: 0; }
+  100% { transform: translate(-50%, 0); opacity: 0; }
+}
+
+/* ==========================================================================
+   8. RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .vsg-slide {
+    width: 76vw;
+  }
+  .vsg-panel-left,
+  .vsg-panel-right {
+    padding: 32px 24px;
+    width: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .vsg-slide {
+    width: 88vw;
+  }
+  .vsg-panel-left,
+  .vsg-panel-right {
+    padding: 20px 16px;
+    width: auto;
+  }
+  .vsg-cta-link {
+    padding: 11px 22px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .vsg-thumb-preview {
+    width: 54px;
+    height: 36px;
+  }
+  .vsg-caption-title {
+    font-size: 14px;
+  }
+  .vsg-caption-sub {
+    font-size: 10px;
+  }
+}

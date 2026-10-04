@@ -1,0 +1,39 @@
+/* ==========================================================================
+   Universal Quill Feather Custom Cursor
+   - Strictly enforces the feather cursor everywhere across the entire site
+   - No default arrow or hand pointer will appear anywhere
+   - Golden nib tip at lower-right: Hotspot at (30, 30) on 1x / (60, 60) on 2x
+   - High-DPI support via image-set (quill-32.png 1x, quill-64.png 2x)
+   - Touch devices preserved via (hover: hover) and (pointer: fine)
+   ========================================================================== */
+
+@media (hover: hover) and (pointer: fine) {
+  *,
+  *::before,
+  *::after,
+  html,
+  body {
+    cursor: url('/assets/cursor/quill-32.png?v=ref1') 30 30, auto !important;
+    cursor: -webkit-image-set(
+      url('/assets/cursor/quill-32.png?v=ref1') 1x,
+      url('/assets/cursor/quill-64.png?v=ref1') 2x
+    ) 30 30, auto !important;
+    cursor: image-set(
+      url('/assets/cursor/quill-32.png?v=ref1') 1x,
+      url('/assets/cursor/quill-64.png?v=ref1') 2x
+    ) 30 30, auto !important;
+  }
+
+  /* Retain standard text I-beam for typing in text fields */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  [contenteditable="true"] {
+    cursor: text !important;
+  }
+}

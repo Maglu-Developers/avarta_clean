@@ -1,0 +1,1267 @@
+/* ==========================================================================
+   AVĀRTĀ — BEYOND THE FRAME & EXPLORE TOGGLE SYSTEM
+   Sophisticated museum/gallery aesthetic, gold accents, glassmorphic dropdown
+   ========================================================================== */
+
+/* ==========================================================================
+   1. EXPLORE DROPDOWN TOGGLE IN NAVBAR
+   ========================================================================== */
+.nav-explore-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-explore-btn {
+  color: #dfc282;
+  text-decoration: none;
+  font-family: 'Cinzel', 'Times New Roman', serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  padding: 6px 18px;
+  border-radius: 9999px;
+  border: 1px solid rgba(223, 194, 130, 0.45);
+  background: transparent;
+  box-shadow: none;
+  white-space: nowrap;
+  transform-origin: center center;
+  will-change: transform;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  outline: none;
+}
+
+.nav-explore-btn:hover,
+.nav-explore-wrapper.is-open .nav-explore-btn {
+  color: #ffffff;
+  background: rgba(223, 194, 130, 0.22);
+  border-color: #dfc282;
+  box-shadow: 0 0 16px rgba(223, 194, 130, 0.35);
+}
+
+.nav-explore-btn.active {
+  color: #030408;
+  background: #dfc282;
+  border-color: #dfc282;
+  box-shadow: 0 0 18px rgba(223, 194, 130, 0.55);
+}
+
+.explore-chevron {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-explore-wrapper.is-open .explore-chevron {
+  transform: rotate(180deg);
+}
+
+/* Explore Dropdown Menu with Side-by-Side Cards */
+.explore-dropdown {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  width: 720px;
+  max-width: 95vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: rgba(8, 10, 16, 0.96);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(223, 194, 130, 0.35);
+  border-radius: 20px;
+  padding: 22px 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 40px rgba(223, 194, 130, 0.14);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.nav-explore-wrapper.is-open .explore-dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.explore-dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(223, 194, 130, 0.16);
+}
+
+.explore-dropdown-header-title {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #dfc282;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.explore-dropdown-header-title::before {
+  content: '✦';
+  font-size: 10px;
+  color: #dfc282;
+}
+
+.explore-dropdown-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.04em;
+}
+
+/* Side-by-Side Cards Grid */
+.explore-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.explore-feature-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px 20px;
+  background: rgba(14, 18, 26, 0.7);
+  border: 1px solid rgba(223, 194, 130, 0.22);
+  border-radius: 16px;
+  text-decoration: none;
+  color: #ffffff;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  min-height: 195px;
+}
+
+.explore-feature-card:hover:not(.is-disabled) {
+  background: rgba(223, 194, 130, 0.12);
+  border-color: #dfc282;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 24px rgba(223, 194, 130, 0.2);
+}
+
+.explore-feature-card.active-item {
+  border-color: #dfc282;
+  background: rgba(223, 194, 130, 0.18);
+  box-shadow: 0 0 20px rgba(223, 194, 130, 0.25);
+}
+
+.explore-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.explore-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(223, 194, 130, 0.1);
+  border: 1px solid rgba(223, 194, 130, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dfc282;
+  transition: all 0.25s ease;
+}
+
+.explore-feature-card:hover:not(.is-disabled) .explore-card-icon {
+  background: #dfc282;
+  color: #030408;
+  box-shadow: 0 0 14px #dfc282;
+}
+
+.explore-card-badge {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: rgba(223, 194, 130, 0.12);
+  border: 1px solid rgba(223, 194, 130, 0.35);
+  color: #dfc282;
+}
+
+.explore-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.explore-card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  line-height: 1.25;
+}
+
+.explore-card-desc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.45;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.explore-card-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #dfc282;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.explore-feature-card:hover:not(.is-disabled) .explore-card-action {
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+/* Secondary / Coming Soon Row */
+.explore-secondary-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(223, 194, 130, 0.12);
+}
+
+.explore-mini-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.explore-mini-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.explore-mini-badge {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.explore-mini-card.live-feature {
+  opacity: 1;
+  cursor: pointer;
+  text-decoration: none;
+  background: rgba(223, 194, 130, 0.06);
+  border: 1px solid rgba(223, 194, 130, 0.28);
+  transition: all 0.25s ease;
+}
+
+.explore-mini-card.live-feature:hover {
+  background: rgba(223, 194, 130, 0.16);
+  border-color: #dfc282;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(223, 194, 130, 0.2);
+}
+
+.explore-mini-card.live-feature .explore-mini-title {
+  color: #ffffff;
+}
+
+.explore-mini-card.live-feature .explore-mini-badge.badge-active {
+  background: rgba(223, 194, 130, 0.2);
+  border-color: #dfc282;
+  color: #dfc282;
+}
+
+@media (max-width: 680px) {
+  .explore-dropdown {
+    width: 320px;
+    padding: 16px;
+  }
+
+  .explore-cards-grid,
+  .explore-secondary-row {
+    grid-template-columns: 1fr;
+  }
+
+  .explore-feature-card {
+    min-height: auto;
+  }
+}
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   2. BEYOND THE FRAME VIEW PAGE LAYOUT — PINNED DESK AESTHETIC
+   ========================================================================== */
+#beyond-view {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(rgba(8, 6, 4, 0.2), rgba(5, 4, 3, 0.4)), url('./assets/beyond_frame_bg.png') center/cover no-repeat fixed !important;
+  z-index: 10;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  -webkit-overflow-scrolling: touch;
+}
+
+#beyond-view.active {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(8, 6, 4, 0.2), rgba(5, 4, 3, 0.4)), url('./assets/beyond_frame_bg.png') center/cover no-repeat fixed !important;
+}
+
+body.page-beyond-mode {
+  overflow: hidden !important;
+  background: linear-gradient(rgba(8, 6, 4, 0.2), rgba(5, 4, 3, 0.4)), url('./assets/beyond_frame_bg.png') center/cover no-repeat fixed !important;
+}
+
+/* Atmospheric Ambient Spotlight */
+.beyond-ambient-glow {
+  position: fixed;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 500px;
+  background: radial-gradient(ellipse, rgba(223, 194, 130, 0.08) 0%, rgba(223, 194, 130, 0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Desk Stage Container */
+.beyond-container {
+  width: 100%;
+  max-width: 1220px;
+  height: auto;
+  min-height: 0;
+  padding: 40px 32px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  margin: 0 auto;
+}
+
+.beyond-desk-stage {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 3.5%;
+  position: relative;
+}
+
+/* ==========================================================================
+   3. LEFT COLUMN: ARTWORK POLAROID & PINNED SKETCHES
+   ========================================================================== */
+.beyond-left-col {
+  width: 48%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+}
+
+/* Background Sketch Papers */
+.beyond-sketch-paper {
+  position: absolute;
+  pointer-events: none;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.85);
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(20, 15, 10, 0.9);
+  border: 1px solid rgba(223, 194, 130, 0.35);
+  opacity: 0.85;
+}
+
+.beyond-sketch-cathedral {
+  top: -44px;
+  left: -32px;
+  width: 235px;
+  height: 180px;
+  transform: rotate(-4deg);
+  z-index: 1;
+  opacity: 0.65;
+  filter: sepia(0.32) contrast(1.05) brightness(0.9);
+}
+
+.beyond-sketch-tower {
+  top: 130px;
+  left: -40px;
+  width: 185px;
+  height: 265px;
+  transform: rotate(3deg);
+  z-index: 1;
+  opacity: 0.6;
+  filter: sepia(0.38) contrast(1.05) brightness(0.88);
+}
+
+.beyond-sketch-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Main Polaroid Frame */
+.beyond-polaroid-frame {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 475px;
+  background: linear-gradient(145deg, rgba(28, 22, 16, 0.94) 0%, rgba(14, 11, 7, 0.98) 100%);
+  border-radius: 8px;
+  padding: 24px 24px 24px 24px;
+  box-sizing: border-box;
+  transform: rotate(-1.5deg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.88), inset 0 0 35px rgba(223, 194, 130, 0.12), 0 0 30px rgba(223, 194, 130, 0.15);
+  border: 1px solid rgba(223, 194, 130, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Washi Tape Strip */
+.beyond-washi-tape {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-3deg);
+  width: 155px;
+  height: 38px;
+  background: linear-gradient(135deg, rgba(223, 194, 130, 0.35) 0%, rgba(160, 125, 55, 0.55) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 215, 120, 0.25);
+  border: 1px solid rgba(255, 225, 160, 0.4);
+  z-index: 6;
+  clip-path: polygon(
+    0% 4%, 2% 0%, 5% 5%, 8% 2%, 93% 2%, 97% 5%, 100% 2%,
+    99% 94%, 96% 98%, 93% 95%, 7% 96%, 3% 99%, 0% 95%
+  );
+}
+
+/* Photo Container inside Polaroid */
+.beyond-polaroid-photo {
+  width: 100%;
+  aspect-ratio: 1.25 / 1;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(223, 194, 130, 0.45);
+  box-shadow: inset 0 3px 12px rgba(0, 0, 0, 0.8), 0 0 18px rgba(0, 0, 0, 0.6);
+  background: #080a10;
+}
+
+.beyond-artwork-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Torn Tag Note */
+.beyond-tag-note {
+  position: absolute;
+  bottom: -20px;
+  right: -24px;
+  width: 165px;
+  min-height: 88px;
+  padding: 14px 16px;
+  background: linear-gradient(140deg, rgba(32, 24, 16, 0.95) 0%, rgba(20, 15, 10, 0.98) 100%);
+  transform: rotate(2.5deg);
+  z-index: 7;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.75), inset 0 0 18px rgba(223, 194, 130, 0.14);
+  border: 1px solid rgba(223, 194, 130, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  clip-path: polygon(
+    3% 4%, 18% 1%, 42% 4%, 65% 1%, 88% 3%, 98% 6%,
+    99% 30%, 97% 55%, 99% 78%, 96% 96%,
+    78% 98%, 52% 96%, 28% 99%, 4% 97%,
+    1% 72%, 3% 45%, 1% 20%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.beyond-tag-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1.15;
+  color: #F2E4BF;
+  text-align: left;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 10px rgba(223, 194, 130, 0.3);
+}
+
+/* Artwork Navigation Arrow Buttons on Polaroid Frame */
+.beyond-art-nav-btn {
+  position: absolute;
+  top: 45%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(14, 11, 7, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(223, 194, 130, 0.55);
+  color: #DFC282;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), inset 0 0 10px rgba(223, 194, 130, 0.15);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.beyond-art-nav-prev {
+  left: -22px;
+}
+
+.beyond-art-nav-next {
+  right: -22px;
+}
+
+.beyond-art-nav-btn:hover {
+  background: rgba(223, 194, 130, 0.25);
+  border-color: #FFF5D6;
+  color: #FFFFFF;
+  box-shadow: 0 0 20px rgba(223, 194, 130, 0.5), 0 10px 28px rgba(0, 0, 0, 0.8);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.beyond-art-nav-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* Highlighted Caption Box inside Polaroid Frame Bottom Margin */
+.beyond-polaroid-frame .beyond-desk-caption {
+  margin-top: 16px;
+  width: 100%;
+  padding: 14px 18px;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, rgba(24, 18, 12, 0.92) 0%, rgba(12, 9, 6, 0.96) 100%);
+  border: 1px solid rgba(223, 194, 130, 0.5);
+  border-radius: 8px;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(223, 194, 130, 0.15);
+  z-index: 5;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
+}
+
+.beyond-caption-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.beyond-caption-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(14, 11, 7, 0.8);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(223, 194, 130, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.beyond-desk-nav-btn {
+  background: transparent;
+  border: none;
+  color: #DFC282;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 3px;
+  line-height: 1;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.beyond-desk-nav-btn:hover {
+  color: #FFFFFF;
+  transform: scale(1.25);
+}
+
+.beyond-art-counter {
+  font-family: 'Cinzel', serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(223, 194, 130, 0.95);
+}
+
+.beyond-desk-caption .beyond-artwork-title {
+  font-family: 'Cinzel', 'Cormorant Garamond', Georgia, serif;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: linear-gradient(135deg, #FFF8E7 0%, #DFC282 50%, #B89446 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.2;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.9));
+}
+
+.beyond-desk-caption .beyond-artwork-meta {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #EAD9B5;
+  margin: 0;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* Antique Brass Key at Bottom-Left */
+.beyond-corner-key {
+  position: absolute;
+  bottom: -32px;
+  left: -34px;
+  width: 110px;
+  height: 110px;
+  transform: rotate(35deg);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.beyond-corner-key-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ==========================================================================
+   4. RIGHT COLUMN: PARCHMENT WRITING CARD
+   ========================================================================== */
+.beyond-right-col {
+  width: 48%;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Stacked Deckled Papers Behind */
+.beyond-stacked-sheet {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 4px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+}
+
+.beyond-sheet-3 {
+  background: linear-gradient(135deg, rgba(45, 33, 22, 0.82) 0%, rgba(25, 18, 12, 0.92) 100%);
+  border: 1px solid rgba(180, 140, 70, 0.3);
+  transform: rotate(1.8deg) translate(8px, 4px);
+  z-index: 1;
+  opacity: 0.85;
+  filter: contrast(1.1);
+  clip-path: polygon(
+    1% 2%, 25% 0%, 55% 2%, 85% 1%, 98% 3%,
+    99% 30%, 97% 65%, 100% 96%,
+    75% 98%, 45% 96%, 15% 99%, 0% 97%,
+    2% 65%, 0% 30%
+  );
+}
+
+.beyond-sheet-2 {
+  background: linear-gradient(135deg, rgba(38, 28, 18, 0.88) 0%, rgba(20, 14, 9, 0.94) 100%);
+  border: 1px solid rgba(200, 160, 80, 0.35);
+  transform: rotate(-1.4deg) translate(-4px, -3px);
+  z-index: 2;
+  opacity: 0.9;
+  clip-path: polygon(
+    2% 1%, 35% 3%, 70% 0%, 99% 2%,
+    98% 35%, 100% 70%, 97% 98%,
+    65% 97%, 30% 99%, 1% 96%,
+    0% 60%, 2% 25%
+  );
+}
+
+.beyond-sheet-1 {
+  background: linear-gradient(135deg, rgba(32, 23, 15, 0.92) 0%, rgba(16, 11, 7, 0.96) 100%);
+  border: 1px solid rgba(223, 194, 130, 0.4);
+  transform: rotate(0.6deg) translate(2px, 2px);
+  z-index: 3;
+  opacity: 0.95;
+  clip-path: polygon(
+    0% 2%, 40% 1%, 80% 3%, 99% 1%,
+    99% 40%, 97% 75%, 98% 99%,
+    60% 98%, 20% 97%, 1% 99%,
+    1% 50%, 0% 15%
+  );
+}
+
+/* Main Parchment Card */
+.beyond-parchment-card {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(24, 18, 12, 0.94) 0%, rgba(14, 10, 6, 0.97) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 6px;
+  padding: 34px 36px 28px 36px;
+  box-sizing: border-box;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), inset 0 0 50px rgba(223, 194, 130, 0.12), 0 0 35px rgba(223, 194, 130, 0.15);
+  border: 1px solid rgba(223, 194, 130, 0.45);
+  clip-path: polygon(
+    0.5% 1%, 20% 0.5%, 45% 1.2%, 70% 0.8%, 93% 1.5%, 99.5% 1%,
+    99.2% 25%, 99.8% 50%, 99.1% 75%, 99.6% 99%,
+    80% 98.8%, 55% 99.4%, 30% 98.6%, 10% 99.2%, 0.4% 98.8%,
+    0.8% 75%, 0.3% 50%, 0.9% 25%
+  );
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card Header inside Parchment */
+.beyond-card-header {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.beyond-card-title {
+  font-family: 'Cinzel', 'Cormorant Garamond', Georgia, serif;
+  font-size: 35px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  background: linear-gradient(135deg, #FFF5D6 0%, #DFC282 50%, #B89446 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 4px 0;
+  line-height: 1.1;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.9));
+}
+
+.beyond-card-subtitle {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 500;
+  color: rgba(235, 215, 175, 0.88);
+  margin: 0 0 10px 0;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* Fleuron Ornamental Divider */
+.beyond-card-divider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 12px auto;
+  width: 220px;
+  height: 22px;
+}
+
+.beyond-fleuron-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Paperclip on Right Edge */
+.beyond-paperclip {
+  position: absolute;
+  top: 76px;
+  right: -12px;
+  width: 30px;
+  height: 75px;
+  transform: rotate(8deg);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.beyond-paperclip-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Ruled Notebook Writing Textarea */
+.beyond-ruled-container {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(223, 194, 130, 0.35);
+  background: rgba(12, 9, 6, 0.8);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
+
+.beyond-notebook-textarea {
+  width: 100%;
+  height: 184px;
+  box-sizing: border-box;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 31px,
+    rgba(223, 194, 130, 0.15) 31px,
+    rgba(223, 194, 130, 0.15) 32px
+  );
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 6px 18px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18.5px;
+  line-height: 32px;
+  color: #F0E2C3;
+  font-weight: 500;
+  transition: box-shadow 0.25s ease;
+}
+
+.beyond-notebook-textarea::placeholder {
+  font-style: italic;
+  color: rgba(223, 194, 130, 0.45);
+  font-weight: 400;
+}
+
+.beyond-notebook-textarea:focus {
+  outline: none;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(223, 194, 130, 0.6);
+}
+
+.beyond-notebook-textarea.has-error {
+  box-shadow: inset 0 2px 7px rgba(70, 50, 25, 0.16), 0 0 0 2px rgba(180, 50, 35, 0.75);
+}
+
+/* Word Counter Row */
+.beyond-counter-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 6px;
+  margin-bottom: 8px;
+  min-height: 20px;
+  gap: 12px;
+}
+
+.beyond-word-counter {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 15.5px;
+  font-weight: 500;
+  color: #DFC282;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease;
+}
+
+.beyond-word-counter.limit-max {
+  color: #8B2E1F !important;
+  font-weight: 700;
+}
+
+.beyond-feedback-msg {
+  font-size: 0.85rem;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  color: #8B2E1F;
+  font-style: italic;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.beyond-feedback-msg.show {
+  opacity: 1;
+}
+
+/* Card Bottom Row: Flowers, Key, Submit Button */
+.beyond-card-bottom-row {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  min-height: 56px;
+}
+
+/* Dried Flower Botanical Sprig */
+.beyond-flower-sprig {
+  position: absolute;
+  bottom: -20px;
+  left: -24px;
+  width: 90px;
+  height: 108px;
+  pointer-events: none;
+  z-index: 6;
+  transform: rotate(-6deg);
+}
+
+.beyond-flower-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Pinned Antique Brass Key on Right Edge */
+.beyond-pinned-key {
+  position: absolute;
+  right: -28px;
+  bottom: 10px;
+  width: 95px;
+  height: 95px;
+  pointer-events: none;
+  z-index: 7;
+}
+
+.beyond-pinned-key-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Ornate SUBMIT Button */
+.beyond-ornate-submit-btn {
+  position: relative;
+  margin-left: auto;
+  width: 226px;
+  height: 52px;
+  background: linear-gradient(180deg, #241a12 0%, #17110c 100%);
+  border: 2px solid #C9A24D;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  z-index: 5;
+  outline: none;
+}
+
+.beyond-submit-inner-frame {
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(201, 162, 77, 0.55);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* Corner Accents */
+.beyond-submit-corner {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border: 1px solid #C9A24D;
+  pointer-events: none;
+}
+
+.beyond-submit-corner.tl {
+  top: 1px;
+  left: 1px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.beyond-submit-corner.tr {
+  top: 1px;
+  right: 1px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.beyond-submit-corner.bl {
+  bottom: 1px;
+  left: 1px;
+  border-right: none;
+  border-top: none;
+}
+
+.beyond-submit-corner.br {
+  bottom: 1px;
+  right: 1px;
+  border-left: none;
+  border-top: none;
+}
+
+.beyond-submit-text {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #F2E4BF;
+  text-transform: uppercase;
+}
+
+.beyond-submit-arrow {
+  font-size: 17px;
+  color: #F2E4BF;
+  transition: transform 0.2s ease;
+}
+
+.beyond-ornate-submit-btn:hover:not(:disabled) {
+  border-color: #E6C46E;
+  box-shadow: 0 0 18px rgba(201, 162, 77, 0.45), 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.beyond-ornate-submit-btn:hover:not(:disabled) .beyond-submit-arrow {
+  transform: translateX(4px);
+}
+
+.beyond-ornate-submit-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.beyond-ornate-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(0.5);
+}
+
+/* ==========================================================================
+   5. AFTER SUBMISSION: PRESENTATION CARD
+   ========================================================================== */
+.beyond-perspective-card {
+  display: none;
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(24, 18, 12, 0.94) 0%, rgba(14, 10, 6, 0.97) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 6px;
+  padding: 34px 36px 28px 36px;
+  box-sizing: border-box;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), inset 0 0 50px rgba(223, 194, 130, 0.12), 0 0 35px rgba(223, 194, 130, 0.15);
+  border: 1px solid rgba(223, 194, 130, 0.45);
+  clip-path: polygon(
+    0.5% 1%, 20% 0.5%, 45% 1.2%, 70% 0.8%, 93% 1.5%, 99.5% 1%,
+    99.2% 25%, 99.8% 50%, 99.1% 75%, 99.6% 99%,
+    80% 98.8%, 55% 99.4%, 30% 98.6%, 10% 99.2%, 0.4% 98.8%,
+    0.8% 75%, 0.3% 50%, 0.9% 25%
+  );
+  flex-direction: column;
+  gap: 16px;
+  animation: beyondCardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.beyond-perspective-card.is-active {
+  display: flex;
+}
+
+.beyond-perspective-quote-box {
+  position: relative;
+  padding: 18px 22px;
+  background: rgba(12, 9, 6, 0.8);
+  border-left: 3px solid #DFC282;
+  border-radius: 0 10px 10px 0;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+  min-height: 120px;
+}
+
+.beyond-perspective-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: #F0E2C3;
+  font-style: italic;
+  margin: 0;
+  word-break: break-word;
+}
+
+.beyond-perspective-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.beyond-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  background: linear-gradient(180deg, #241a12 0%, #17110c 100%);
+  color: #F2E4BF;
+  border: 1px solid #C9A24D;
+  border-radius: 4px;
+  font-family: 'Cinzel', serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.beyond-reset-btn:hover {
+  border-color: #E6C46E;
+  box-shadow: 0 0 16px rgba(201, 162, 77, 0.35);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   6. ENTRANCE ANIMATIONS (SUBTLE, 700ms)
+   ========================================================================== */
+@keyframes beyondEntranceDesk {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes beyondEntranceDeskRotated {
+  from {
+    opacity: 0;
+    transform: translateY(20px) rotate(-1.5deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(-1.5deg);
+  }
+}
+
+@keyframes beyondEntranceParchment {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .beyond-polaroid-frame {
+    animation: beyondEntranceDeskRotated 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  .beyond-parchment-card {
+    animation: beyondEntranceParchment 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .beyond-tag-note,
+  .beyond-paperclip {
+    animation: beyondEntranceDesk 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards;
+  }
+}
+
+/* ==========================================================================
+   7. RESPONSIVE BREAKPOINTS (STACKING BELOW 900px)
+   ========================================================================== */
+@media (max-width: 900px) {
+  #beyond-view {
+    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
+    display: none;
+  }
+
+  #beyond-view.active {
+    display: block !important;
+  }
+
+  body.page-beyond-mode {
+    overflow-y: auto !important;
+  }
+
+  .beyond-container {
+    padding: 80px 20px 40px 20px;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .beyond-desk-stage {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .beyond-left-col,
+  .beyond-right-col {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .beyond-polaroid-frame {
+    max-width: 100%;
+    transform: rotate(-0.75deg);
+  }
+
+  .beyond-card-title {
+    font-size: 28px;
+  }
+
+  .beyond-card-subtitle {
+    font-size: 16px;
+  }
+
+  .beyond-sketch-paper {
+    display: none;
+  }
+
+  .beyond-corner-key {
+    display: none;
+  }
+
+  .beyond-ornate-submit-btn {
+    width: 100%;
+  }
+}
+

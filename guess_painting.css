@@ -1,0 +1,1071 @@
+/* ==========================================================================
+   AVĀRTĀ AUCTION HOUSE — PAINT VS PRETEND (CURATOR'S DESK)
+   Full-bleed 16:9 stage (zero side black space), fully visible brass A/B plates,
+   refined back toggle to Explore, authentic vintage canvas texture, no-scroll.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   GLOBAL ROUTE ISOLATION & NAVBAR SUPPRESSION
+   -------------------------------------------------------------------------- */
+body.page-guess-mode {
+  overflow: hidden !important;
+  background-color: #080604 !important;
+}
+
+/* Hide global navbar & dark tint layers on Paint vs Pretend only */
+body.page-guess-mode #site-navbar,
+body.page-guess-mode .navbar,
+body.page-guess-mode .overlay,
+body.page-guess-mode #intro-fx-canvas,
+body.page-guess-mode #corridor-canvas,
+body.page-guess-mode #water-canvas {
+  display: none !important;
+}
+
+/* Fixed Curator Back Toggle to Explore Gallery (Top Left) */
+.guess-back-toggle,
+.guess-back-arrow {
+  position: fixed;
+  top: 20px;
+  left: 22px;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px 7px 12px;
+  border-radius: 20px;
+  background: rgba(18, 13, 9, 0.88);
+  border: 1px solid rgba(223, 194, 130, 0.45);
+  color: #dfc282;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(223, 194, 130, 0.2);
+  cursor: pointer;
+}
+
+body.page-guess-mode .guess-back-toggle,
+body.page-guess-mode .guess-back-arrow {
+  display: inline-flex;
+}
+
+.guess-back-toggle:hover,
+.guess-back-arrow:hover {
+  background: rgba(35, 24, 15, 0.95);
+  border-color: #f1db9b;
+  color: #ffffff;
+  transform: translateX(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9), 0 0 16px rgba(223, 194, 130, 0.4);
+}
+
+.guess-back-toggle svg,
+.guess-back-arrow svg {
+  transition: transform 0.25s ease;
+  display: block;
+}
+
+.guess-back-toggle:hover svg,
+.guess-back-arrow:hover svg {
+  transform: translateX(-3px);
+}
+
+.back-toggle-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: #dfc282;
+}
+
+.guess-back-toggle:hover .back-toggle-label {
+  color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   VIEW CONTAINER & FULL-BLEED 16:9 STAGE (NO BLACK BARS AT SIDES)
+   -------------------------------------------------------------------------- */
+#guess-view {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden !important;
+  background: url('/paint-vs-pretend/desk-bg.png') center center / cover no-repeat #080604 !important;
+  z-index: 10;
+  color: #e5ded5;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  box-sizing: border-box;
+}
+
+#guess-view:not(.active) {
+  display: none !important;
+}
+
+#guess-view.active {
+  display: block !important;
+}
+
+#guess-view.show-results {
+  overflow: hidden !important;
+}
+
+#guess-view.show-results .curator-stage-viewport {
+  background: url('/paint-vs-pretend/ledger-bg.png') center center / cover no-repeat #080604 !important;
+  overflow: hidden !important;
+  height: 100vh;
+  min-height: 100vh;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#guess-view.show-results .curator-16-9-stage {
+  display: none !important;
+}
+
+#guess-view.show-results ~ #guessBackToggle,
+body.show-results #guessBackToggle,
+body.show-results .guess-back-toggle,
+body.show-results .guess-back-arrow {
+  display: none !important;
+}
+
+.curator-stage-viewport {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('/paint-vs-pretend/desk-bg.png') center center / cover no-repeat !important;
+}
+
+/* Full-bleed Responsive Stage:
+   The background image has aspect ratio 1024 / 577 = 1.7747 (16:9).
+   Using max(100vw, calc(100vh * 1024 / 577)) and max(100vh, calc(100vw * 577 / 1024))
+   guarantees the stage covers the entire screen in all orientations (ultrawide, standard, mobile),
+   with ZERO black space, letterboxing, or pillarboxing!
+*/
+.curator-16-9-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: max(100vw, calc(100vh * 1024 / 577));
+  height: max(100vh, calc(100vw * 577 / 1024));
+  background: url('/paint-vs-pretend/desk-bg.png') center center / cover no-repeat;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Very light edge vignette in idle state (Zero central tint or blur) */
+.curator-edge-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 65%, rgba(0, 0, 0, 0.35) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Cinematic Dark Overlay disabled so desk stays bright and natural */
+.stage-reveal-overlay {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   DYNAMIC LOT PILL (APPEARS ONLY FOR LOT 02+ SO LOT 01 HAS ZERO OVERLAP)
+   -------------------------------------------------------------------------- */
+.stage-lot-pill {
+  position: absolute;
+  top: 7.7%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 14px;
+  background: #0f0a06;
+  border: 1px solid rgba(223, 194, 130, 0.45);
+  border-radius: 2px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+  z-index: 5;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.stage-hairline {
+  width: 22px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(223, 194, 130, 0.75), transparent);
+}
+
+.stage-lot-tag {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(10px, 0.85vw, 12px);
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  color: #dfc282;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   PAINTINGS: SIZED & POSITIONED SO BRASS NAMEPLATES A & B ARE 100% VISIBLE
+   -------------------------------------------------------------------------- */
+
+/* Base Mount */
+.stage-mount {
+  position: absolute;
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  z-index: 4;
+  outline: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s ease,
+              filter 0.35s ease,
+              opacity 0.4s ease;
+}
+
+/* --------------------------------------------------------------------------
+   PAINTINGS: POSITIONED DIRECTLY INSIDE THE ANCIENT CANVAS OF DESK-BG.PNG
+   No fake paper mount or fake clips — the authentic ancient canvas in desk-bg.png
+   surrounds each artwork seamlessly, matching Photo 1.
+   -------------------------------------------------------------------------- */
+
+/* Base Mount: Sits precisely in the painted area of the ancient canvas */
+.stage-mount {
+  position: absolute;
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  z-index: 4;
+  overflow: hidden;
+  border-radius: 1px;
+  /* Authentic crippled / deckled / chipped paint perimeter effect via SVG fractal displacement */
+  filter: url(#antique-cripple-edge);
+  /* Chipped feathered shadow seamlessly blending paint onto rough ancient paper */
+  box-shadow: 
+    inset 0 0 14px rgba(15, 10, 4, 0.75),
+    inset 0 0 3px rgba(0, 0, 0, 0.9),
+    0 0 3px rgba(30, 20, 10, 0.5);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s ease,
+              filter 0.25s ease;
+}
+
+/* Painting A: Precisely aligned to the perspective-tilted ancient canvas on Easel A */
+.stage-mount.mount-a {
+  left: 27.44%;
+  top: 33.05%;
+  width: 19.1%;
+  height: 36.5%;
+  clip-path: polygon(0% 0%, 94.8% 0%, 100% 100%, 0% 100%);
+  -webkit-clip-path: polygon(0% 0%, 94.8% 0%, 100% 100%, 0% 100%);
+}
+
+/* Painting B: Precisely aligned to the perspective-tilted ancient canvas on Easel B (flawless full coverage, no gap) */
+.stage-mount.mount-b {
+  left: 55.08%;
+  top: 32.93%;
+  width: 19.25%;
+  height: 37.35%;
+  clip-path: polygon(0% 0%, 91.5% 0%, 100% 100%, 0% 100%);
+  -webkit-clip-path: polygon(0% 0%, 91.5% 0%, 100% 100%, 0% 100%);
+}
+
+/* Old, Vintage Oil Painting Artwork Image */
+.mount-art-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* Rich classical oil painting tone */
+  filter: contrast(1.05) brightness(0.98) saturate(1.05) sepia(0.05);
+}
+
+/* Vintage Canvas Weave & Varnish Patina Overlay:
+   Binds the photo into the woven canvas grain with natural feathered chiaroscuro vignette,
+   antique craquelure fissures, and crippled deckled border weathering matching Photo 1.
+*/
+.canvas-vintage-glaze {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Coarse physical linen weave grain + craquelure fissures + amber varnish patina */
+  background-image:
+    /* Fine woven linen canvas threads */
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.045) 0px, rgba(0, 0, 0, 0.045) 1px, transparent 1px, transparent 2px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.045) 0px, rgba(0, 0, 0, 0.045) 1px, transparent 1px, transparent 2px),
+    /* Crippled / crinkled diagonal paint fissures & craquelure */
+    repeating-linear-gradient(55deg, rgba(25, 15, 5, 0.035) 0px, rgba(25, 15, 5, 0.035) 1px, transparent 1px, transparent 8px),
+    repeating-linear-gradient(-35deg, rgba(25, 15, 5, 0.03) 0px, rgba(25, 15, 5, 0.03) 1px, transparent 1px, transparent 10px),
+    /* Edge chiaroscuro vignette blending paint into the white ancient canvas */
+    radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(25, 15, 6, 0.22) 80%, rgba(10, 6, 2, 0.6) 100%),
+    /* Irregular perimeter weathering */
+    linear-gradient(180deg, rgba(15, 8, 3, 0.25) 0%, transparent 8%, transparent 92%, rgba(15, 8, 3, 0.3) 100%),
+    linear-gradient(90deg, rgba(15, 8, 3, 0.25) 0%, transparent 6%, transparent 94%, rgba(15, 8, 3, 0.25) 100%);
+  box-shadow: 
+    inset 0 0 16px rgba(12, 7, 2, 0.7),
+    inset 0 0 3px rgba(0, 0, 0, 0.95);
+  mix-blend-mode: multiply;
+}
+
+/* Fake mount elements suppressed completely */
+.mount-deckled-paper,
+.mount-art-inner,
+.mount-brass-clip,
+.mount-brass-foot,
+.mount-hover-prompt {
+  display: none !important;
+}
+
+/* Hover Examine Prompt */
+.mount-hover-prompt {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(14, 10, 7, 0.88);
+  border: 1px solid rgba(223, 194, 130, 0.55);
+  padding: 3px 10px;
+  border-radius: 16px;
+  color: #dfc282;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 10;
+}
+
+.mount-hover-prompt .prompt-icon {
+  font-size: 11px;
+  color: #dfc282;
+}
+
+/* --------------------------------------------------------------------------
+   HOVER INTERACTION (WHEN NOT LOCKED)
+   -------------------------------------------------------------------------- */
+.curator-16-9-stage:not(.is-locked) .stage-mount:hover {
+  filter: brightness(1.06);
+  box-shadow: 
+    inset 0 0 12px rgba(15, 10, 4, 0.5),
+    0 0 14px rgba(223, 194, 130, 0.3);
+}
+
+/* Input lock state: immediately ignore hover and clicks */
+.curator-16-9-stage.is-locked .stage-mount {
+  pointer-events: none;
+}
+
+/* Feedback on picked mount */
+.stage-mount.is-picked {
+  z-index: 12;
+  box-shadow: 
+    inset 0 0 14px rgba(15, 10, 4, 0.6),
+    0 0 18px rgba(223, 194, 130, 0.4);
+  filter: brightness(1.05);
+}
+
+/* Other painting stays naturally visible on its easel */
+.stage-mount.is-other {
+  opacity: 0.95;
+}
+
+.stage-mount.show-counterpart {
+  opacity: 1;
+}
+
+/* 0.5s: Stamp-in Effect */
+.curator-seal-stamp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.6) rotate(-6deg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6px, 1vh, 10px) clamp(14px, 1.5vw, 22px);
+  border-radius: 3px;
+}
+
+.curator-seal-stamp .seal-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(14px, 1.4vw, 18px);
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+/* ORIGINAL: Gold */
+.curator-seal-stamp.stamp-original {
+  background: rgba(18, 14, 8, 0.92);
+  border: 2px solid #dfc282;
+  color: #f7e6be;
+  box-shadow: 0 0 25px rgba(223, 194, 130, 0.5), inset 0 0 12px rgba(223, 194, 130, 0.25);
+}
+
+/* PRETEND: Deep Muted Red */
+.curator-seal-stamp.stamp-pretend {
+  background: rgba(28, 10, 10, 0.92);
+  border: 2px solid #c94a4a;
+  color: #ff9d9d;
+  box-shadow: 0 0 25px rgba(201, 74, 74, 0.5), inset 0 0 12px rgba(201, 74, 74, 0.25);
+}
+
+/* Active Stamp Animation */
+.stage-mount.stamp-active .curator-seal-stamp {
+  animation: stampIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.25) forwards;
+}
+
+@keyframes stampIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.6) rotate(-6deg);
+  }
+  65% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.96) rotate(-4deg);
+  }
+  82% {
+    transform: translate(-50%, -50%) scale(1.03) rotate(-5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(-4deg);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   REVEAL REMARKS AND DOCK: COMPLETELY REMOVED AS REQUESTED
+   -------------------------------------------------------------------------- */
+.stage-reveal-dock,
+.curator-verdict-line,
+.curator-artwork-reveal-meta,
+.curator-verdict-note,
+.curator-reveal-action,
+.curator-next-lot-text-btn {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   THE CURATOR'S LEDGER (FINAL AUTHENTICATION REPORT)
+   Exact match to Photo 1 & 3 16:9 connoisseur gallery desk study
+   -------------------------------------------------------------------------- */
+body.page-guess-mode #guess-view.show-results {
+  background: url('/paint-vs-pretend/ledger-bg.png') center center / cover no-repeat #080604 !important;
+}
+
+.curator-certificate-stage {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: max(100vw, calc(100vh * 1376 / 768));
+  height: max(100vh, calc(100vw * 768 / 1376));
+  background: url('/paint-vs-pretend/ledger-bg.png') center center / cover no-repeat #080604 !important;
+  overflow: hidden;
+  box-sizing: border-box;
+  z-index: 50;
+}
+
+.curator-certificate-stage.is-active {
+  display: block;
+}
+
+/* Ambient Lantern Flicker Spotlight Overlay */
+.ledger-lantern-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 38%;
+  height: 32%;
+  background: radial-gradient(ellipse at 50% 12%, rgba(255, 215, 120, 0.35) 0%, rgba(255, 160, 50, 0.12) 45%, transparent 72%);
+  pointer-events: none;
+  z-index: 20;
+  animation: ledgerLanternFlicker 6s infinite ease-in-out;
+}
+
+@keyframes ledgerLanternFlicker {
+  0%, 100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
+  25% { opacity: 0.72; transform: translateX(-50%) scale(0.98); }
+  50% { opacity: 0.95; transform: translateX(-50%) scale(1.02); }
+  75% { opacity: 0.8; transform: translateX(-50%) scale(0.99); }
+}
+
+/* Composition Wrapper filling the 16:9 stage */
+.ledger-composition-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* MAIN DECKLED PARCHMENT SHEET (Sitting right on the 16:9 canvas parchment) */
+.curator-ledger-sheet {
+  position: absolute;
+  left: 25.8%;
+  top: 8.5%;
+  width: 48.5%;
+  height: 84.5%;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  padding: 16px 22px 14px 22px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  z-index: 12;
+  animation: ledgerSheetRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@keyframes ledgerSheetRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ledger-parchment-texture {
+  display: none !important;
+}
+
+.ledger-inner-border {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Corner flourishes are already in background image */
+.ledger-corner {
+  display: none !important;
+}
+
+/* HEADER */
+.ledger-header {
+  margin-bottom: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ledger-fleur-crest {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.ledger-fleur-crest svg {
+  width: clamp(20px, 2.2vh, 26px);
+  height: clamp(20px, 2.2vh, 26px);
+  fill: #6b1018;
+}
+
+.ledger-brand {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 700;
+  letter-spacing: 0.38em;
+  color: #1c1410;
+  margin: 0 0 1px 0;
+  line-height: 1.1;
+}
+
+.ledger-brand-sub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(9.5px, 1vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: #5a452c;
+  margin-bottom: 5px;
+}
+
+.ledger-brand-sub .rule {
+  height: 1px;
+  width: 38px;
+  background: rgba(184, 145, 63, 0.75);
+}
+
+.ledger-main-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(26px, 2.7vw, 34px);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #6b1018;
+  margin: 0 0 3px 0;
+  line-height: 1.15;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.ledger-subtitle-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(9.5px, 1vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: #3b2c1d;
+  margin-bottom: 6px;
+}
+
+.ledger-subtitle-row .flourish-dash {
+  color: #b8913f;
+  font-size: 8px;
+}
+
+/* SCORE BLOCK (Ornate Scalloped Cartouche matching Photo 3) */
+.ledger-score-box {
+  margin: 2px auto 6px auto;
+  width: 90%;
+  max-width: 500px;
+}
+
+.score-box-border {
+  position: relative;
+  padding: 12px 24px 10px 24px;
+  border-radius: 8px;
+  background: rgba(255, 248, 230, 0.22);
+  box-shadow: inset 0 0 22px rgba(184, 145, 63, 0.16);
+  border: none !important;
+}
+
+.score-box-cartouche-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  filter: drop-shadow(0 1px 2px rgba(184, 145, 63, 0.3));
+}
+
+.score-box-inner-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.score-box-label {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(10px, 1.05vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: #2b1f15;
+  margin-bottom: 2px;
+}
+
+.score-box-digits-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 1px 0;
+}
+
+.score-box-digits-row .score-dash {
+  color: #b8913f;
+  font-size: clamp(11px, 1.2vw, 15px);
+}
+
+.score-box-digits {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(44px, 4.8vw, 62px);
+  font-weight: 700;
+  color: #6b1018;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.score-box-provenance {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(12px, 1.2vw, 15px);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #1f140c;
+  margin-top: 2px;
+}
+
+/* ORNAMENTAL FLEUR MID-DIVIDER */
+.ledger-mid-flourish {
+  display: flex;
+  justify-content: center;
+  margin: 4px auto;
+}
+
+/* TWO-COLUMN METRICS */
+.ledger-two-column-split {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 88%;
+  margin: 4px auto 8px auto;
+  gap: 20px;
+}
+
+.ledger-metric-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ledger-metric-column .col-digits {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(38px, 4.2vw, 54px);
+  font-weight: 700;
+  color: #6b1018;
+  line-height: 1.05;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+.ledger-metric-column .col-label {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(10.5px, 1.1vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #1a120c;
+  margin-top: 3px;
+}
+
+.ledger-metric-column .col-caption {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(12px, 1.25vw, 15px);
+  letter-spacing: 0.05em;
+  color: #4a3324;
+  margin-top: 2px;
+}
+
+.ledger-col-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ledger-col-divider .divider-line {
+  width: 1px;
+  height: 38px;
+  background: rgba(184, 145, 63, 0.75);
+}
+
+.ledger-col-divider .divider-diamond {
+  color: #b8913f;
+  font-size: 10px;
+}
+
+/* QUOTE BLOCK */
+.ledger-quote-block {
+  margin: 4px auto 8px auto;
+  max-width: 500px;
+}
+
+.ledger-quote-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(14px, 1.45vw, 18px);
+  color: #22160f;
+  line-height: 1.4;
+  margin: 0 auto 3px auto;
+}
+
+.ledger-quote-flourish {
+  color: #b8913f;
+  font-size: 9px;
+}
+
+/* ACTIONS */
+.ledger-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.ledger-primary-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: clamp(280px, 30vw, 360px);
+  padding: 11px 28px;
+  background: #140f0c;
+  border: 1px solid #b8913f;
+  border-radius: 4px;
+  color: #eed9a8;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(11px, 1.1vw, 13.5px);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 
+    inset 0 0 0 2px #140f0c,
+    inset 0 0 0 3px rgba(184, 145, 63, 0.55),
+    0 8px 24px rgba(0, 0, 0, 0.7);
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ledger-primary-btn:hover {
+  background: #241913;
+  border-color: #eed9a8;
+  color: #ffffff;
+  transform: translateY(-1.5px);
+  box-shadow: 
+    inset 0 0 0 2px #241913,
+    inset 0 0 0 3px rgba(238, 217, 168, 0.75),
+    0 12px 28px rgba(0, 0, 0, 0.85),
+    0 0 18px rgba(184, 145, 63, 0.5);
+}
+
+.ledger-primary-btn:active {
+  transform: translateY(0.5px);
+}
+
+.ledger-primary-btn .btn-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.ledger-primary-btn:hover .btn-icon {
+  transform: rotate(-180deg);
+}
+
+.ledger-return-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(10px, 1vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: #3b2c1d;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  margin-top: 4px;
+}
+
+.ledger-return-link:hover {
+  color: #6b1018;
+}
+
+.ledger-return-link .link-arrow {
+  transition: transform 0.2s ease;
+}
+
+.ledger-return-link:hover .link-arrow {
+  transform: translateX(-3px);
+}
+
+/* ==========================================================================
+   SIDE SCROLL: MARKS OF PROVENANCE (Fitting the Photo 2 Canvas)
+   ========================================================================== */
+.ledger-side-scroll {
+  position: absolute;
+  left: 76.2%;
+  top: 8.8%;
+  width: 14.0%;
+  height: 78%;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 34px 10px 10px 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 12;
+  pointer-events: none;
+}
+
+.scroll-deckled-parchment {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  width: 100%;
+}
+
+.scroll-header .scroll-crest {
+  color: #b8913f;
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+
+.scroll-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(13px, 1.4vw, 17px);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #2b1d12;
+  margin: 0 0 6px 0;
+  line-height: 1.3;
+}
+
+.scroll-divider {
+  width: 58px;
+  height: 1px;
+  background: rgba(184, 145, 63, 0.75);
+  margin: 10px auto 14px auto;
+}
+
+.scroll-marks-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 16px 0;
+  width: 94%;
+}
+
+.scroll-marks-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(14px, 1.45vw, 18px);
+  color: #2b1d12;
+  line-height: 1.28;
+}
+
+.scroll-marks-list .mark-bullet {
+  color: #6b1018;
+  font-size: clamp(11px, 1.1vw, 13.5px);
+  flex-shrink: 0;
+}
+
+.scroll-marks-list .mark-name {
+  font-style: italic;
+  font-weight: 500;
+}
+
+.scroll-tagline {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(12.5px, 1.3vw, 15.5px);
+  color: #4a3324;
+  line-height: 1.35;
+  margin: 10px auto;
+  max-width: 155px;
+}
+
+/* Wax seal is already baked in photorealistic 3D in the 16:9 canvas */
+.scroll-wax-seal-wrapper {
+  display: none;
+}
+
+/* ==========================================================================
+   RESPONSIVE LAYOUT (MOBILE FALLBACK)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .curator-certificate-stage {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    transform: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px 12px;
+    display: none;
+  }
+  .curator-certificate-stage.is-active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .ledger-composition-wrapper {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+  }
+  .curator-ledger-sheet {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    background: 
+      radial-gradient(ellipse at 50% 28%, rgba(255, 248, 230, 0.96) 0%, rgba(235, 216, 180, 0.98) 55%, rgba(198, 168, 122, 0.98) 100%),
+      linear-gradient(180deg, #f2e1c0 0%, #ebd3a5 40%, #dec18e 75%, #cca368 100%) !important;
+    border: 1px solid rgba(135, 95, 45, 0.45) !important;
+    border-radius: 4px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85) !important;
+    padding: 18px 14px;
+  }
+  .ledger-inner-border {
+    border: 1px solid rgba(184, 145, 63, 0.75) !important;
+    outline: 1px solid rgba(184, 145, 63, 0.4) !important;
+    outline-offset: -5px;
+    padding: 12px 10px;
+  }
+  .ledger-corner {
+    display: block !important;
+  }
+  .ledger-side-scroll {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-lantern-glow {
+    animation: none !important;
+  }
+  .curator-ledger-sheet {
+    animation: none !important;
+  }
+}

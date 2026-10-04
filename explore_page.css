@@ -1,0 +1,470 @@
+/* ==========================================================================
+   AVĀRTĀ — 3D PANORAMIC EXPLORE GALLERY PAGE
+   Curved cylindrical 3D perspective stage matching spatial design reference
+   ========================================================================== */
+
+#explore-view {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #070a12 url('assets/explore_bg.png?v=studio_desk_v1') center center / cover no-repeat fixed;
+  z-index: 10;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#explore-view::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 35%, rgba(6, 9, 16, 0.10) 0%, rgba(3, 4, 8, 0.42) 90%),
+              linear-gradient(180deg, rgba(3, 5, 10, 0.22) 0%, rgba(3, 5, 10, 0.05) 35%, rgba(3, 5, 10, 0.32) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+#explore-view.active {
+  display: flex;
+}
+
+body.page-explore-mode {
+  overflow: hidden !important;
+}
+
+.explore-page-container {
+  width: 100%;
+  max-width: 1440px;
+  height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 70px 24px 16px 24px;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+  overflow: visible; /* allow edge cards (1 & 4) to receive pointer events */
+}
+
+/* Atmospheric Ambient Spotlight */
+.explore-page-ambient {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1100px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(223, 194, 130, 0.18) 0%, rgba(223, 194, 130, 0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Header / Subtitle matching reference */
+.explore-page-header {
+  text-align: center;
+  max-width: 820px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 5;
+  flex-shrink: 0;
+}
+
+.explore-page-badge {
+  display: none !important;
+}
+
+.explore-page-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.7rem, 3vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #ffffff;
+  line-height: 1.1;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.8), 0 0 30px rgba(223, 194, 130, 0.25);
+}
+
+.explore-page-tagline {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.02em;
+  max-width: 680px;
+  line-height: 1.3;
+}
+
+/* ==========================================================================
+   3D PANORAMIC CURVED PERSPECTIVE STAGE
+   ========================================================================== */
+.explore-spatial-stage {
+  width: 100%;
+  perspective: 1200px;
+  -webkit-perspective: 1200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  position: relative;
+  z-index: 4;
+  flex: 1;
+  min-height: 0;
+  overflow: visible; /* allow rotated edge cards to be fully hittable */
+}
+
+.explore-spatial-track {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+  width: 100%;
+  max-width: 1320px;
+}
+
+/* Individual 3D Spatial Canvas Card */
+.explore-spatial-card {
+  position: relative;
+  flex: 0 0 clamp(200px, 20vw, 270px);
+  height: clamp(300px, 55vh, 420px);
+  border-radius: 18px;
+  overflow: hidden;
+  text-decoration: none;
+  cursor: pointer;
+  background: #080a10;
+  border: 1px solid rgba(223, 194, 130, 0.25);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 0, 0, 0.5);
+  transform-style: preserve-3d;
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px 18px;
+  box-sizing: border-box;
+}
+
+/* Natural Cylindrical Curve Angles for 4 items */
+.explore-spatial-card:nth-child(1) {
+  transform: rotateY(16deg) translateZ(-25px);
+}
+
+.explore-spatial-card:nth-child(2) {
+  transform: rotateY(5deg) translateZ(5px);
+}
+
+.explore-spatial-card:nth-child(3) {
+  transform: rotateY(-5deg) translateZ(5px);
+}
+
+.explore-spatial-card:nth-child(4) {
+  transform: rotateY(-16deg) translateZ(-25px);
+}
+
+/* Hover Interaction: Lift forward, glow, expand */
+.explore-spatial-card:hover {
+  transform: translateY(-16px) translateZ(45px) rotateY(0deg) scale(1.04) !important;
+  border-color: rgba(223, 194, 130, 0.6);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(223, 194, 130, 0.35);
+  z-index: 10;
+}
+
+/* ── SELECTED STATE (set via JS on mouseover) ── */
+.explore-spatial-card.is-selected {
+  transform: translateY(-22px) translateZ(60px) rotateY(0deg) scale(1.07) !important;
+  border-color: #dfc282;
+  box-shadow:
+    0 35px 80px rgba(0, 0, 0, 0.95),
+    0 0 0 2px #dfc282,
+    0 0 55px rgba(223, 194, 130, 0.55),
+    0 0 100px rgba(223, 194, 130, 0.2);
+  z-index: 20;
+}
+
+/* Dim all siblings when one card is selected */
+.explore-spatial-track.has-selection .explore-spatial-card:not(.is-selected) {
+  opacity: 0.45;
+  filter: brightness(0.6) saturate(0.7);
+  transform-origin: center bottom;
+}
+
+/* Selected card: brighten the image */
+.explore-spatial-card.is-selected .explore-spatial-img {
+  transform: scale(1.1);
+  filter: brightness(1.1) contrast(1.12) saturate(1.1);
+}
+
+/* Selected card: lighten the scrim so image shows more */
+.explore-spatial-card.is-selected .explore-spatial-scrim {
+  background: linear-gradient(
+    180deg,
+    rgba(3, 4, 8, 0.05) 0%,
+    rgba(3, 4, 8, 0.22) 35%,
+    rgba(3, 4, 8, 0.88) 82%,
+    #030408 100%
+  );
+}
+
+/* Selected card: action label glow */
+.explore-spatial-card.is-selected .explore-spatial-action {
+  color: #ffffff;
+  transform: translateX(6px);
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.7);
+}
+
+/* Selected card: golden top selection indicator bar */
+.explore-spatial-card.is-selected::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  width: 80%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #dfc282, #fff8e1, #dfc282, transparent);
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 0 14px rgba(223, 194, 130, 0.9);
+  z-index: 10;
+  animation: selection-bar-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes selection-bar-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 14px rgba(223, 194, 130, 0.9); }
+  50%       { opacity: 0.7; box-shadow: 0 0 28px rgba(223, 194, 130, 0.5); }
+}
+
+/* Painting Background Image */
+.explore-spatial-img-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.explore-spatial-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+  filter: brightness(0.85) contrast(1.05);
+}
+
+.explore-spatial-card:hover .explore-spatial-img {
+  transform: scale(1.08);
+  filter: brightness(1.0) contrast(1.1);
+}
+
+/* Vignette Gradients */
+.explore-spatial-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(3, 4, 8, 0.2) 0%,
+    rgba(3, 4, 8, 0.4) 45%,
+    rgba(3, 4, 8, 0.95) 90%,
+    #030408 100%
+  );
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+.explore-spatial-card:hover .explore-spatial-scrim {
+  background: linear-gradient(
+    180deg,
+    rgba(3, 4, 8, 0.1) 0%,
+    rgba(3, 4, 8, 0.3) 40%,
+    rgba(3, 4, 8, 0.92) 85%,
+    #030408 100%
+  );
+}
+
+/* Top Badge on Card */
+/* Top Badge on Card (Removed per design) */
+.explore-spatial-top {
+  display: none;
+}
+
+/* Bottom Content Info */
+.explore-spatial-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 4px 4px 4px;
+}
+
+.explore-spatial-heading {
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+  font-size: clamp(19px, 1.9vw, 22px);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #fff8eb;
+  line-height: 1.25;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 0 16px rgba(223, 194, 130, 0.18);
+  margin-bottom: 2px;
+}
+
+.explore-spatial-desc {
+  display: none;
+}
+
+.explore-spatial-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Cinzel', 'Space Grotesk', serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #dfc282;
+  text-shadow: 0 0 10px rgba(223, 194, 130, 0.35);
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.explore-spatial-card:hover .explore-spatial-action {
+  color: #ffffff;
+  transform: translateX(5px);
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.6);
+}
+
+/* ==========================================================================
+   RESPONSIVE LAYOUTS
+   ========================================================================== */
+@media (max-width: 1200px) {
+  .explore-spatial-track {
+    gap: 14px;
+  }
+  .explore-spatial-card {
+    flex: 0 0 clamp(180px, 18vw, 240px);
+    height: clamp(280px, 50vh, 380px);
+  }
+}
+
+@media (max-width: 992px) {
+  body.page-explore-mode {
+    overflow: hidden !important;
+  }
+
+  #explore-view {
+    overflow: hidden;
+  }
+
+  .explore-page-container {
+    padding: 70px 16px 12px 16px;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+  }
+
+  .explore-spatial-stage {
+    perspective: none;
+    -webkit-perspective: none;
+  }
+
+  .explore-spatial-track {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 640px;
+    gap: 14px;
+  }
+
+  .explore-spatial-card {
+    flex: none;
+    height: clamp(160px, 35vh, 280px);
+    transform: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .explore-spatial-track {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
+    gap: 10px;
+  }
+
+  .explore-spatial-card {
+    height: clamp(140px, 30vh, 220px);
+  }
+
+  .explore-page-title {
+    font-size: 1.5rem;
+  }
+
+  .explore-page-tagline {
+    font-size: 0.82rem;
+  }
+}
+
+/* ==========================================================================
+   FEATURE VIEWS BACK-TO-EXPLORE NAVIGATION BUTTON
+   ========================================================================== */
+.beyond-header-top-row,
+.quiz-header-top-row,
+.guess-header-top-row,
+.beyond-avarta-header-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.view-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  background: rgba(223, 194, 130, 0.08);
+  border: 1px solid rgba(223, 194, 130, 0.28);
+  color: #dfc282;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.view-back-btn:hover {
+  background: rgba(223, 194, 130, 0.2);
+  border-color: #dfc282;
+  color: #ffffff;
+  transform: translateX(-3px);
+  box-shadow: 0 0 16px rgba(223, 194, 130, 0.25);
+}
+
+/* ==========================================================================
+   BEYOND THE FRAME — FIXED TOP-LEFT BACK BUTTON
+   ========================================================================== */
+.beyond-back-fixed {
+  position: fixed;
+  top: 16px;
+  left: 20px;
+  z-index: 9999;
+  display: none;
+  padding: 8px 10px;
+}
+
+#beyond-view.active .beyond-back-fixed {
+  display: inline-flex;
+}
+

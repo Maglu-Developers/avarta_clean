@@ -1,0 +1,12 @@
+{
+  "name": "avarta2",
+  "version": "1.0.0",
+  "description": "AVARTA2 Local Web Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "motion": "^13.2.0"
+  }
+}

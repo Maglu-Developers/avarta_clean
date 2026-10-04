@@ -1,0 +1,705 @@
+/* ==========================================================================
+   AVĀRTĀ — "THE FORGOTTEN GALLERY AWAKENS" 20-SECOND CINEMATIC ENTRANCE ANIMATION
+   Theme: Antique Dark Luxury Palace Museum Gallery (Inspired by About Us 3D Corridor)
+   Sequence:
+     1. Abandoned Gallery in deep darkness with faint moonlight silhouettes (0.0s - 2.0s)
+     2. First ceiling chandelier turns on with warm amber glow & beam (2.0s - 4.2s)
+     3. Continuous 3D camera dolly glide begins down the palace corridor (4.2s - 16.5s)
+     4. Ceiling lights power on one by one down the gallery (4.8s, 7.5s, 10.2s, 12.8s, 15.0s)
+     5. Red velvet cloths slide and fall down from paintings simultaneously as lights hit them
+     6. Artworks reveal slowly with oil varnish gleams and gilded frame luster
+     7. Camera reaches the end of the gallery (16.5s)
+     8. AVĀRTĀ title materializes with glowing metallic antique-gold typography (17.4s)
+     9. Tagline "Beyond the Frame, Within the Story" appears below (18.3s)
+     10. "Enter the Gallery" toggle button appears below (18.9s)
+     11. Top center horizontal navbar with Home, Collection, About Us, Explore fades in (19.4s)
+   ========================================================================== */
+
+#avarta-intro {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  cursor: default;
+  pointer-events: auto;
+}
+
+html.no-intro #avarta-intro {
+  display: none !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+#avarta-intro.intro-done {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.intro-video {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Persistent FX canvas for golden dust particles inside the light beams */
+#intro-fx-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* Abandoned Darkness Veil: starts near-pitch black, lifts smoothly upon first light */
+.intro-darkness-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  background: radial-gradient(circle at 50% 45%, rgba(4, 5, 8, 0.92) 0%, rgba(1, 2, 4, 0.98) 75%, #000000 100%);
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 3.5s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: opacity;
+}
+
+.intro-darkness-veil.illuminated {
+  opacity: 0;
+}
+
+/* ==========================================================================
+   2. OVERHEAD CEILING CHANDELIERS & VOLUMETRIC LIGHTS RIG
+   ========================================================================== */
+.corridor-lights-rig {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.gallery-light-fixture {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+/* Fixture 1: Foreground Chandelier */
+.light-fixture-1 {
+  top: -3%;
+  width: 180px;
+  height: 42vh;
+  z-index: 15;
+}
+
+/* Fixture 2: Mid-Foreground Chandelier */
+.light-fixture-2 {
+  top: 4%;
+  width: 140px;
+  height: 34vh;
+  z-index: 14;
+  transform: translateX(-50%) scale(0.82);
+}
+
+/* Fixture 3: Central Chandelier */
+.light-fixture-3 {
+  top: 11%;
+  width: 110px;
+  height: 27vh;
+  z-index: 13;
+  transform: translateX(-50%) scale(0.68);
+}
+
+/* Fixture 4: Mid-Deep Chandelier */
+.light-fixture-4 {
+  top: 17%;
+  width: 85px;
+  height: 22vh;
+  z-index: 12;
+  transform: translateX(-50%) scale(0.54);
+}
+
+/* Fixture 5: Deep Hall Chandelier */
+.light-fixture-5 {
+  top: 23%;
+  width: 65px;
+  height: 17vh;
+  z-index: 11;
+  transform: translateX(-50%) scale(0.42);
+}
+
+/* Fixture Golden Pendant & Rod */
+.fixture-rod {
+  width: 2px;
+  height: 35%;
+  background: linear-gradient(180deg, rgba(215, 175, 80, 0.9), rgba(120, 85, 30, 0.7));
+}
+
+.fixture-pendant {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff9de 0%, #e5c158 50%, #7d5918 100%);
+  box-shadow: 0 0 18px rgba(255, 235, 160, 0.75);
+}
+
+/* Radiant Golden Halo / Bulb Glow */
+.fixture-glow {
+  position: absolute;
+  top: 32%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 240, 180, 0.92) 0%, rgba(229, 193, 88, 0.52) 42%, transparent 72%);
+  filter: blur(15px);
+  opacity: 0;
+  transition: opacity 1.0s ease, transform 1.0s ease;
+  will-change: opacity, transform;
+}
+
+/* Volumetric Downward Spotlight Cone */
+.fixture-beam {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 290px;
+  height: 80vh;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 235, 170, 0.46) 0%,
+    rgba(229, 193, 88, 0.22) 35%,
+    rgba(160, 110, 30, 0.05) 70%,
+    transparent 100%
+  );
+  clip-path: polygon(43% 0%, 57% 0%, 100% 100%, 0% 100%);
+  filter: blur(10px);
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* Ignited State for Sequential Ceiling Light Power-On */
+.gallery-light-fixture.ignited {
+  opacity: 1;
+}
+
+.gallery-light-fixture.ignited .fixture-glow {
+  opacity: 1;
+  animation: lampWarmPulse 5s ease-in-out infinite alternate;
+}
+
+.gallery-light-fixture.ignited .fixture-beam {
+  opacity: 1;
+}
+
+@keyframes lampWarmPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.06);
+    opacity: 1.0;
+  }
+}
+
+/* ==========================================================================
+   3. 3D CORRIDOR WALLS & 4 TIERS OF PAINTINGS COVERED IN RED VELVET CLOTH
+   ========================================================================== */
+.corridor-wall {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 44%;
+  height: 100%;
+  transform-style: preserve-3d;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.corridor-wall-left {
+  left: 0;
+  transform-origin: left center;
+}
+
+.corridor-wall-right {
+  right: 0;
+  transform-origin: right center;
+}
+
+/* Individual Framed Painting Item */
+.wall-painting-item {
+  position: absolute;
+  transform-style: preserve-3d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.6s ease;
+}
+
+/* Left Wall Painting Positions (4 Tiers) */
+.painting-left-1 {
+  left: 2%;
+  top: 20%;
+  width: clamp(140px, 17vw, 240px);
+  transform: perspective(900px) rotateY(28deg) translateZ(40px);
+}
+
+.painting-left-2 {
+  left: 14%;
+  top: 26%;
+  width: clamp(110px, 13.5vw, 190px);
+  transform: perspective(900px) rotateY(26deg) translateZ(-60px);
+}
+
+.painting-left-3 {
+  left: 24%;
+  top: 31%;
+  width: clamp(85px, 10.5vw, 150px);
+  transform: perspective(900px) rotateY(23deg) translateZ(-150px);
+}
+
+.painting-left-4 {
+  left: 31%;
+  top: 35%;
+  width: clamp(65px, 8vw, 115px);
+  transform: perspective(900px) rotateY(20deg) translateZ(-240px);
+}
+
+/* Right Wall Painting Positions (4 Tiers) */
+.painting-right-1 {
+  right: 2%;
+  top: 20%;
+  width: clamp(140px, 17vw, 240px);
+  transform: perspective(900px) rotateY(-28deg) translateZ(40px);
+}
+
+.painting-right-2 {
+  right: 14%;
+  top: 26%;
+  width: clamp(110px, 13.5vw, 190px);
+  transform: perspective(900px) rotateY(-26deg) translateZ(-60px);
+}
+
+.painting-right-3 {
+  right: 24%;
+  top: 31%;
+  width: clamp(85px, 10.5vw, 150px);
+  transform: perspective(900px) rotateY(-23deg) translateZ(-150px);
+}
+
+.painting-right-4 {
+  right: 31%;
+  top: 35%;
+  width: clamp(65px, 8vw, 115px);
+  transform: perspective(900px) rotateY(-20deg) translateZ(-240px);
+}
+
+/* Gilded Baroque Ornate Frame */
+.painting-ornate-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 
+    0 14px 40px rgba(0, 0, 0, 0.92),
+    0 2px 10px rgba(0, 0, 0, 0.8),
+    inset 0 0 15px rgba(0, 0, 0, 0.85);
+  border: 7px solid #2e1d0c;
+  outline: 2.5px solid #d4a74f;
+  outline-offset: -3px;
+  background: #0d0a08;
+  will-change: transform, filter;
+  transition: box-shadow 1.6s ease, outline-color 1.6s ease;
+}
+
+.painting-ornate-frame.frame-illuminated {
+  outline-color: #f7d88b;
+  box-shadow: 
+    0 18px 50px rgba(0, 0, 0, 0.95),
+    0 0 25px rgba(229, 193, 88, 0.45),
+    inset 0 0 8px rgba(255, 235, 170, 0.35);
+}
+
+/* Masterpiece Canvas Image */
+.painting-artwork-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.88) contrast(1.1);
+}
+
+/* Warm Oil Varnish Sheen Flash upon Reveal */
+.painting-varnish-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(255, 240, 190, 0.45) 45%,
+    rgba(229, 193, 88, 0.65) 52%,
+    transparent 65%
+  );
+  transform: translateX(-150%) skewX(-20deg);
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+}
+
+.painting-ornate-frame.revealed .painting-varnish-sheen {
+  animation: varnishSweep 2.2s cubic-bezier(0.2, 0.8, 0.25, 1) 0.3s forwards;
+}
+
+@keyframes varnishSweep {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateX(180%) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   4. LUXURY RED VELVET CLOTH COVER (SLIDES & FALLS DOWN SLOWLY)
+   ========================================================================== */
+.red-cloth-shroud {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 8;
+  overflow: hidden;
+  transform: translateY(0);
+  background: linear-gradient(145deg, #480c13 0%, #7d1622 35%, #580e17 70%, #2b060b 100%);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.85), 0 8px 18px rgba(0, 0, 0, 0.7);
+  will-change: transform, opacity;
+  transition: transform 2.8s cubic-bezier(0.35, 0.05, 0.2, 1), opacity 2.5s ease 0.3s;
+}
+
+/* Red Velvet Texture Overlay */
+.cloth-fabric-texture {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 40% 30%, rgba(255, 100, 110, 0.22) 0%, transparent 60%);
+  mix-blend-mode: screen;
+}
+
+/* Realistic Vertical Drape & Fold Wrinkles */
+.cloth-drape-folds {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.65) 0px,
+    transparent 12px,
+    rgba(255, 140, 150, 0.18) 22px,
+    rgba(0, 0, 0, 0.75) 34px
+  );
+  mix-blend-mode: overlay;
+}
+
+/* Antique Gold Fringe / Trim at Bottom Edge of Cloth */
+.cloth-gold-trim {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 9px;
+  background: repeating-linear-gradient(
+    90deg,
+    #ffe29a 0px,
+    #c49742 4px,
+    #7a5518 8px
+  );
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(229, 193, 88, 0.4);
+}
+
+/* TRIGGER: Red Cloth Slides & Cascades Downward Smoothly */
+.red-cloth-shroud.cloth-slid-down {
+  transform: translateY(115%) scaleY(1.05);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Classical Museum Brass Nameplate */
+.painting-nameplate {
+  margin-top: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(8px, 0.85vw, 10.5px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(235, 215, 170, 0.85);
+  background: rgba(18, 12, 8, 0.8);
+  border: 1px solid rgba(215, 175, 80, 0.35);
+  padding: 3px 8px;
+  border-radius: 2px;
+  text-align: center;
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 1.4s ease 1.0s, transform 1.4s ease 1.0s;
+}
+
+.painting-ornate-frame.revealed + .painting-nameplate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Floor Reflection Layer */
+.corridor-floor-reflection {
+  position: absolute;
+  bottom: -4%;
+  left: 0;
+  right: 0;
+  height: 38%;
+  background: linear-gradient(180deg, transparent 0%, rgba(20, 14, 8, 0.45) 50%, rgba(5, 3, 2, 0.9) 100%);
+  pointer-events: none;
+  z-index: 12;
+}
+
+/* ==========================================================================
+   5. FILM GRAIN & VIGNETTE OVERLAY
+   ========================================================================== */
+.intro-film-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.035;
+  background-image: repeating-radial-gradient(circle at 50% 50%, #fff 0, #000 2px, transparent 4px);
+  background-size: 4px 4px;
+}
+
+.intro-vignette-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 45;
+  background: radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0, 0, 0, 0.75) 100%);
+}
+
+/* ==========================================================================
+   6. HERO WORDMARK & METALLIC ANTIQUE-GOLD REVEAL
+   ========================================================================== */
+.hero-wordmark {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.04em, 0.6vw, 0.18em);
+  font-family: 'Cinzel', 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(3.6rem, 8.5vw, 8.2rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #FAFAFA;
+  line-height: 1;
+  padding: 14px 0 10px 0;
+  will-change: transform, opacity;
+}
+
+.letter-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Initial letter state during intro */
+body.intro-active .letter {
+  opacity: 0;
+  filter: blur(20px);
+  transform: scale(0.92) translateY(8px);
+  will-change: opacity, filter, transform;
+}
+
+.letter {
+  display: inline-block;
+  opacity: 1;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFF2D6 22%, #ECCB85 55%, #BD8C3A 85%, #8A5F1C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  filter: 
+    drop-shadow(0 0 28px rgba(240, 195, 95, 0.75)) 
+    drop-shadow(0 0 55px rgba(205, 155, 55, 0.45)) 
+    drop-shadow(0 5px 22px rgba(0, 0, 0, 0.95));
+  transform: scale(1) translateY(0);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.letter-wrap.visible .letter {
+  opacity: 1 !important;
+  transform: scale(1) translateY(0) !important;
+  filter: 
+    drop-shadow(0 0 28px rgba(240, 195, 95, 0.85)) 
+    drop-shadow(0 0 55px rgba(205, 155, 55, 0.55)) 
+    drop-shadow(0 5px 22px rgba(0, 0, 0, 0.95)) !important;
+}
+
+/* Thin horizontal accent line above A's */
+.accent-line {
+  position: absolute;
+  top: -14px;
+  left: 12%;
+  right: 12%;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent, #ffe7a0, #e5c158, #ffe7a0, transparent);
+  box-shadow: 0 0 10px rgba(255, 231, 160, 0.95), 0 0 22px rgba(229, 193, 88, 0.65);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: opacity 0.65s ease 0.35s, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.35s;
+}
+
+.letter-wrap.has-accent.visible .accent-line,
+body:not(.intro-active) .letter-wrap.has-accent .accent-line {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* Hero Tagline Below AVĀRTĀ */
+.hero-tagline {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(0.95rem, 1.8vw, 1.45rem);
+  font-weight: 500;
+  font-style: italic;
+  color: rgba(235, 215, 170, 0.92);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  margin-top: -6px;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 20px rgba(229, 193, 88, 0.35);
+  transition: opacity 0.85s ease, transform 0.85s ease;
+}
+
+body.intro-active .hero-tagline {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.85s ease, transform 0.85s ease;
+}
+
+body.intro-active .hero-tagline.visible,
+.hero-tagline.visible,
+body:not(.intro-active) .hero-tagline {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* ==========================================================================
+   7. "ENTER THE GALLERY" BUTTON & HORIZONTAL NAVBAR
+   ========================================================================== */
+body.intro-active .hero-cta {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.85s ease, transform 0.85s ease;
+}
+
+body.intro-active .hero-cta.visible,
+.hero-cta.visible,
+body:not(.intro-active) .hero-cta {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.hero-cta {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-cta::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 235, 180, 0.25) 50%,
+    transparent 100%
+  );
+  transform: skewX(-22deg);
+  transition: none;
+  pointer-events: none;
+}
+
+.hero-cta:hover::after {
+  left: 160%;
+  transition: left 0.75s ease-in-out;
+}
+
+/* Horizontal Top Navigation Bar */
+body.intro-active #site-navbar {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.intro-navbar-visible #site-navbar,
+body:not(.intro-active) #site-navbar {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+   8. LUXURY SKIP BUTTON
+   ========================================================================== */
+.intro-skip-btn {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  z-index: 2147483647;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  opacity: 1;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.intro-skip-btn.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.intro-active {
+  overflow: hidden !important;
+}
