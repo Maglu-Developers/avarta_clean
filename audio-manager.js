@@ -1,23 +1,24 @@
 /**
  * AVĀRTĀ ® — Global Audio Manager (Singleton)
- * Controls background soundtrack "The Sound of Magic (2022) - Opening Theme.mp3"
- * Continuously plays on a seamless loop across all pages, categories, and route switches without stopping.
+ * Primary Soundtrack: "assets/The Sound of Magic (2022) - Opening Theme.mp3.mpeg"
+ * Continuously plays on a seamless loop across all pages, landing page, intro video, and route switches.
  */
 (function (window) {
   'use strict';
 
   const AUDIO_SOURCES = [
+    'assets/The Sound of Magic (2022) - Opening Theme.mp3.mpeg',
+    'assets/The%20Sound%20of%20Magic%20(2022)%20-%20Opening%20Theme.mp3.mpeg',
     'audio/The Sound of Magic (2022) - Opening Theme.mp3',
-    'audio/The Sound of Magic - Opening Theme.mp3',
-    'audio/sound_of_magic.mp3',
-    'audio/fantasy.mp3',
+    'audio/The%20Sound%20of%20Magic%20(2022)%20-%20Opening%20Theme.mp3',
+    'audio/hero section.mpeg',
     'audio/mystical.mp3',
-    'assets/audio/ambient.mp3'
+    'audio/fantasy.mp3'
   ];
 
   const TARGET_VOLUME = 0.85;
 
-  class AudioManager {
+  class GlobalAudioManager {
     constructor() {
       if (window.AudioManagerInstance) {
         return window.AudioManagerInstance;
@@ -26,14 +27,16 @@
       this.audio = new Audio();
       this.audio.loop = true;
       this.audio.volume = TARGET_VOLUME;
+      this.audio.preload = 'auto';
 
       this.sourceIdx = 0;
-      this.isStarted = false;
-      this.isIntroPlaying = true;
+      this.isPlaying = false;
+      this.hasInteractionListener = false;
 
       this.initSource();
       this.bindEvents();
       this.bindInteractionListener();
+      this.attemptPlay();
 
       window.AudioManagerInstance = this;
     }
@@ -42,7 +45,7 @@
       if (this.sourceIdx >= AUDIO_SOURCES.length) return;
       this.audio.src = AUDIO_SOURCES[this.sourceIdx];
 
-      // Sync playback position from sessionStorage across page transitions
+      // Restore playback position from sessionStorage for seamless cross-page navigation
       const savedPos = sessionStorage.getItem('avarta_bg_audio_pos');
       if (savedPos && !isNaN(parseFloat(savedPos))) {
         try {
@@ -52,11 +55,12 @@
     }
 
     bindEvents() {
+      // Fallback to next source if error occurs loading audio
       this.audio.addEventListener('error', () => {
         this.sourceIdx++;
         if (this.sourceIdx < AUDIO_SOURCES.length) {
           this.initSource();
-          this.play();
+          this.attemptPlay();
         }
       });
 
@@ -64,77 +68,78 @@
       setInterval(() => {
         if (this.audio && !this.audio.paused && this.audio.currentTime > 0) {
           sessionStorage.setItem('avarta_bg_audio_pos', this.audio.currentTime.toFixed(2));
-          sessionStorage.setItem('avarta_bg_audio_playing', 'true');
+          sessionStorage.setItem('avarta_bg_audio_active', 'true');
         }
-      }, 300);
+      }, 250);
 
       window.addEventListener('beforeunload', () => {
         if (this.audio && !this.audio.paused) {
           sessionStorage.setItem('avarta_bg_audio_pos', this.audio.currentTime.toFixed(2));
-          sessionStorage.setItem('avarta_bg_audio_playing', 'true');
+          sessionStorage.setItem('avarta_bg_audio_active', 'true');
         }
       });
     }
 
-    // Called when intro video completely finishes or is skipped
-    onIntroFinished() {
-      this.isIntroPlaying = false;
-      this.play();
-    }
-
-    play() {
-      const isCrossPageNav = sessionStorage.getItem('avarta_bg_audio_playing') === 'true';
-      if (this.isIntroPlaying && !isCrossPageNav) {
-        return; // Strictly do NOT play during intro video
-      }
-
-      this.isStarted = true;
+    attemptPlay() {
       this.audio.volume = TARGET_VOLUME;
+      const promise = this.audio.play();
 
-      const playPromise = this.audio.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          sessionStorage.setItem('avarta_bg_audio_playing', 'true');
+      if (promise !== undefined) {
+        promise.then(() => {
+          this.isPlaying = true;
+          sessionStorage.setItem('avarta_bg_audio_active', 'true');
         }).catch(err => {
-          console.warn('[AudioManager] Autoplay blocked, waiting for user interaction:', err);
+          console.warn('[AVĀRTĀ Audio Engine] Autoplay pending user interaction:', err);
           this.bindInteractionListener();
         });
       }
+    }
+
+    play() {
+      this.attemptPlay();
+    }
+
+    onIntroFinished() {
+      // Keep music playing continuously (no restart or pause)
+      this.attemptPlay();
     }
 
     bindInteractionListener() {
       if (this.hasInteractionListener) return;
       this.hasInteractionListener = true;
       const self = this;
-      function startOnInteraction() {
-        if (!self.isIntroPlaying || sessionStorage.getItem('avarta_bg_audio_playing') === 'true') {
-          self.play();
-        }
-        ['click', 'touchstart', 'keydown', 'pointerdown', 'wheel'].forEach(evt => {
-          document.removeEventListener(evt, startOnInteraction);
-          window.removeEventListener(evt, startOnInteraction);
+
+      function unlockAudio() {
+        self.attemptPlay();
+        ['click', 'touchstart', 'keydown', 'pointerdown', 'wheel', 'scroll', 'mousemove'].forEach(evt => {
+          document.removeEventListener(evt, unlockAudio);
+          window.removeEventListener(evt, unlockAudio);
         });
       }
-      ['click', 'touchstart', 'keydown', 'pointerdown', 'wheel'].forEach(evt => {
-        document.addEventListener(evt, startOnInteraction, { once: true, passive: true });
-        window.addEventListener(evt, startOnInteraction, { once: true, passive: true });
+
+      ['click', 'touchstart', 'keydown', 'pointerdown', 'wheel', 'scroll', 'mousemove'].forEach(evt => {
+        document.addEventListener(evt, unlockAudio, { once: true, passive: true });
+        window.addEventListener(evt, unlockAudio, { once: true, passive: true });
       });
     }
   }
 
-  // Create singleton instance
-  const manager = new AudioManager();
+  // Create singleton instance immediately
+  const manager = new GlobalAudioManager();
   window.AudioManager = manager;
 
+  // Global window handle for backward compatibility with existing project scripts
   window.avartaBgAudio = {
     play: function () { manager.play(); },
-    pause: function () {}, // Intentionally disabled so background music plays continuously
-    stop: function () {}   // Intentionally disabled so background music plays continuously
+    pause: function () {}, // Continuous loop throughout entire website
+    stop: function () {}   // Continuous loop throughout entire website
   };
 
-  // If music was already playing in session (e.g. navigation to categories.html), play immediately
-  if (sessionStorage.getItem('avarta_bg_audio_playing') === 'true') {
-    manager.isIntroPlaying = false;
-    manager.play();
+  // Attempt play on DOMReady & load
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    manager.attemptPlay();
+  } else {
+    document.addEventListener('DOMContentLoaded', function () { manager.attemptPlay(); });
+    window.addEventListener('load', function () { manager.attemptPlay(); });
   }
 })(window);

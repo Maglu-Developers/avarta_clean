@@ -1538,70 +1538,9 @@
         // Ensure intro video audio is enabled (and background music disabled during video)
         video.muted = false;
         video.volume = 1.0;
-
-        // ==========================================================================
-        // BACKGROUND MUSIC ENGINE: "The Sound of Magic (2022) - Opening Theme"
-        // Rules:
-        // 1. MUST NOT play during intro video.
-        // 2. Starts ONLY AFTER intro video ends/finishes.
-        // ==========================================================================
-        const bgAudio = new Audio();
-        bgAudio.loop = true;
-        bgAudio.volume = 0.85;
-
-        const audioSources = [
-          'audio/The Sound of Magic (2022) - Opening Theme.mp3',
-          'audio/The Sound of Magic - Opening Theme.mp3',
-          'audio/sound_of_magic.mp3',
-          'audio/fantasy.mp3',
-          'audio/mystical.mp3',
-          'assets/audio/ambient.mp3'
-        ];
-
-        let audioSourceIdx = 0;
-        function tryLoadNextSource() {
-          if (audioSourceIdx >= audioSources.length) return;
-          bgAudio.src = audioSources[audioSourceIdx];
+        if (window.AudioManager && typeof window.AudioManager.play === 'function') {
+          window.AudioManager.play();
         }
-        tryLoadNextSource();
-
-        bgAudio.addEventListener('error', function () {
-          audioSourceIdx++;
-          if (audioSourceIdx < audioSources.length) {
-            tryLoadNextSource();
-          }
-        });
-
-        let bgAudioPlayed = false;
-        function startBackgroundMusic() {
-          if (bgAudioPlayed) return;
-          bgAudioPlayed = true;
-
-          // Ensure video is paused
-          try { video.pause(); } catch (e) { }
-
-          const playPromise = bgAudio.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(function (err) {
-              console.warn('[AVĀRTĀ Background Music] Autoplay pending interaction:', err);
-              function startOnUserInteraction() {
-                bgAudio.play().catch(function () { });
-                ['click', 'touchstart', 'keydown'].forEach(function (evt) {
-                  document.removeEventListener(evt, startOnUserInteraction);
-                });
-              }
-              ['click', 'touchstart', 'keydown'].forEach(function (evt) {
-                document.addEventListener(evt, startOnUserInteraction, { once: true });
-              });
-            });
-          }
-        }
-
-        window.avartaBgAudio = {
-          play: startBackgroundMusic,
-          pause: function () { try { bgAudio.pause(); } catch (e) { } },
-          stop: function () { try { bgAudio.pause(); bgAudio.currentTime = 0; } catch (e) { } }
-        };
 
         let unmutedByInteraction = false;
         function enableAudioOnInteraction() {
